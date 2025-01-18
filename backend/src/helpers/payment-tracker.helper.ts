@@ -9,6 +9,7 @@ export const getPaymentTrackersByUserId = async (userId: string) => {
     where: { userId },
     include: {
       welfareProgram: true, // Include welfare program details
+      payment: true, // Include associated payments
     },
     orderBy: { cycleStart: "desc" },
   });
