@@ -1,6 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../utils/app-error";
-import prisma from "../config/db";
+import {
+  createExpenseHelper,
+  deleteExpenseHelper,
+  getAllExpensesHelper,
+  getExpenseByIdHelper,
+  updateExpenseHelper,
+} from "../helpers/expenses.helper";
 
 export const createExpense = async (
   req: Request,
@@ -10,13 +16,11 @@ export const createExpense = async (
   const { description, amount, welfareProgramId, recordedBy } = req.body;
 
   try {
-    const expense = await prisma.expense.create({
-      data: {
-        description,
-        amount,
-        welfareProgramId,
-        recordedBy,
-      },
+    const expense = await createExpenseHelper({
+      description,
+      amount,
+      welfareProgramId,
+      recordedBy,
     });
     res.status(201).json({ message: "Expense created successfully", expense });
   } catch (error) {
@@ -30,9 +34,7 @@ export const getAllExpenses = async (
   next: NextFunction
 ) => {
   try {
-    const expenses = await prisma.expense.findMany({
-      include: { welfareProgram: true },
-    });
+    const expenses = await getAllExpensesHelper();
     res.status(200).json({ expenses });
   } catch (error) {
     next(new AppError("Error fetching expenses", 500));
@@ -47,10 +49,7 @@ export const getExpenseById = async (
   const { id } = req.params;
 
   try {
-    const expense = await prisma.expense.findUnique({
-      where: { id },
-      include: { welfareProgram: true },
-    });
+    const expense = await getExpenseByIdHelper(id);
 
     if (!expense) {
       return next(new AppError("Expense not found", 404));
@@ -70,21 +69,25 @@ export const updateExpense = async (
   const { id } = req.params;
   const { description, amount, welfareProgramId } = req.body;
 
+  // Check if expense exists
+  const expense = await getExpenseByIdHelper(id);
+  // If expense does not exist, return an error
+  if (!expense) {
+    return next(new AppError("Expense not found", 404));
+  }
+
   try {
-    const updatedExpense = await prisma.expense.update({
-      where: { id },
-      data: {
-        description,
-        amount,
-        welfareProgramId,
-      },
+    const updatedExpense = await updateExpenseHelper(id, {
+      description,
+      amount,
+      welfareProgramId,
     });
     res.status(200).json({
       message: "Expense updated successfully",
       expense: updatedExpense,
     });
   } catch (error) {
-    next(new AppError("Error updating expense", 500));
+    next(new AppError(`Error updating expense ${error}`, 500));
   }
 };
 
@@ -95,10 +98,15 @@ export const deleteExpense = async (
 ) => {
   const { id } = req.params;
 
+  // Check if expense exists
+  const expense = await getExpenseByIdHelper(id);
+  // If expense does not exist, return an error
+  if (!expense) {
+    return next(new AppError("Expense not found", 404));
+  }
+
   try {
-    await prisma.expense.delete({
-      where: { id },
-    });
+    await deleteExpenseHelper(id);
     res.status(200).json({ message: "Expense deleted successfully" });
   } catch (error) {
     next(new AppError("Error deleting expense", 500));

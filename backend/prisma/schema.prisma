@@ -42,7 +42,7 @@ model Enrollment {
   user            User            @relation(fields: [userId], references: [id])
   welfareProgramId String
   welfareProgram  WelfareProgram  @relation(fields: [welfareProgramId], references: [id])
-  status          EnrollmentStatus @default(PENDING) // PENDING, APPROVED
+  status          EnrollmentStatus  // PENDING, APPROVED
   enrolledAt      DateTime        @default(now())
 }
 
@@ -56,6 +56,7 @@ model Payment {
   paymentDate     DateTime  @default(now())
   paymentMode     PaymentMode
   receiptNumber   String    @unique
+  paymentTrackers PaymentTracker[]
 }
 
 model PaymentTracker {
@@ -67,6 +68,8 @@ model PaymentTracker {
   cycleStart      DateTime
   cycleEnd        DateTime
   paymentStatus   PaymentStatus
+  paymentId       String
+  payment         Payment   @relation(fields: [paymentId], references: [id])
 }
 
 model Expense {
@@ -112,7 +115,7 @@ enum EnrollmentStatus {
 }
 
 enum PaymentMode {
-  MOBILE_MONEY
+  MOMO
   CARD
   CASH
 }

@@ -11,11 +11,11 @@ const route = Router();
 
 // Define feature-specific sub-routes
 route.use("/user", userRoutes);
-route.use("/enrollments", enrollmentRoutes);
 route.use("/welfare-programs", welfareProgramRoutes);
+route.use("/enrollments", enrollmentRoutes);
 route.use("/analytics", analyticsRoutes);
 route.use("/expenses", expenseRoutes);
 route.use("/payments", paymentRoutes);
-route.use("/payment-tracker", paymentTrackerRoutes);
+route.use("/payment-tracker", paymentTrackerRoutes); //
 
 export default route;

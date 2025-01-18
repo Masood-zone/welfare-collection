@@ -1,19 +1,27 @@
 import { Router } from "express";
 import {
-  createPaymentTracker,
-  getAllPaymentTrackers,
-  getPaymentTrackerById,
-  updatePaymentTracker,
   deletePaymentTracker,
+  trackPaymentsByUserId,
+  trackPaymentsByWelfareProgramAndUser,
 } from "../../../controllers/payment-tracker.controller";
 import { authenticateUser } from "../../../middleware/auth.middleware";
 
 const paymentTrackerRoutes = Router();
 
-paymentTrackerRoutes.post("/", authenticateUser, createPaymentTracker);
-paymentTrackerRoutes.get("/", authenticateUser, getAllPaymentTrackers);
-paymentTrackerRoutes.get("/:id", authenticateUser, getPaymentTrackerById);
-paymentTrackerRoutes.patch("/:id", authenticateUser, updatePaymentTracker);
+// Routes for payment tracker
+// Track payments by user ID
+paymentTrackerRoutes.get(
+  "/user/:userId",
+  authenticateUser,
+  trackPaymentsByUserId
+);
+
+// Track payments by welfare program ID and user ID
+paymentTrackerRoutes.get(
+  "/welfare-program/:welfareProgramId",
+  authenticateUser,
+  trackPaymentsByWelfareProgramAndUser
+);
 paymentTrackerRoutes.delete("/:id", authenticateUser, deletePaymentTracker);
 
 export default paymentTrackerRoutes;

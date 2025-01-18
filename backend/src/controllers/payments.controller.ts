@@ -1,24 +1,26 @@
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../utils/app-error";
-import prisma from "../config/db";
+import {
+  createPaymentHelper,
+  deletePaymentHelper,
+  getAllPaymentsHelper,
+  getPaymentByIdHelper,
+  updatePaymentHelper,
+} from "../helpers/payments.helper";
 
 export const createPayment = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const { userId, welfareProgramId, amount, paymentMode, receiptNumber } =
-    req.body;
+  const { userId, welfareProgramId, amount, paymentMode } = req.body;
 
   try {
-    const payment = await prisma.payment.create({
-      data: {
-        userId,
-        welfareProgramId,
-        amount,
-        paymentMode,
-        receiptNumber,
-      },
+    const payment = await createPaymentHelper({
+      userId,
+      welfareProgramId,
+      amount,
+      paymentMode,
     });
     res.status(201).json({ message: "Payment created successfully", payment });
   } catch (error) {
@@ -32,9 +34,7 @@ export const getAllPayments = async (
   next: NextFunction
 ) => {
   try {
-    const payments = await prisma.payment.findMany({
-      include: { user: true, welfareProgram: true },
-    });
+    const payments = await getAllPaymentsHelper();
     res.status(200).json({ payments });
   } catch (error) {
     next(new AppError("Error fetching payments", 500));
@@ -49,10 +49,7 @@ export const getPaymentById = async (
   const { id } = req.params;
 
   try {
-    const payment = await prisma.payment.findUnique({
-      where: { id },
-      include: { user: true, welfareProgram: true },
-    });
+    const payment = await getPaymentByIdHelper(id);
 
     if (!payment) {
       return next(new AppError("Payment not found", 404));
@@ -70,16 +67,17 @@ export const updatePayment = async (
   next: NextFunction
 ) => {
   const { id } = req.params;
-  const { amount, paymentMode, receiptNumber } = req.body;
-
+  const { amount, paymentMode } = req.body;
+  // Check if payment exists
+  const payment = await getPaymentByIdHelper(id);
+  // If payment does not exist, return an error
+  if (!payment) {
+    return next(new AppError("Payment not found", 404));
+  }
   try {
-    const updatedPayment = await prisma.payment.update({
-      where: { id },
-      data: {
-        amount,
-        paymentMode,
-        receiptNumber,
-      },
+    const updatedPayment = await updatePaymentHelper(id, {
+      amount,
+      paymentMode,
     });
     res.status(200).json({
       message: "Payment updated successfully",
@@ -97,10 +95,15 @@ export const deletePayment = async (
 ) => {
   const { id } = req.params;
 
+  // Check if payment exists
+  const payment = await getPaymentByIdHelper(id);
+  // If payment does not exist, return an error
+  if (!payment) {
+    return next(new AppError("Payment not found", 404));
+  }
+
   try {
-    await prisma.payment.delete({
-      where: { id },
-    });
+    await deletePaymentHelper(id);
     res.status(200).json({ message: "Payment deleted successfully" });
   } catch (error) {
     next(new AppError("Error deleting payment", 500));

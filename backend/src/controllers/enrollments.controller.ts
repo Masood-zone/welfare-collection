@@ -1,6 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../utils/app-error";
-import prisma from "../config/db";
+import {
+  approveEnrollmentHelper,
+  createEnrollmentHelper,
+  deleteEnrollmentHelper,
+  getAllEnrollmentsHelper,
+  getEnrollmentByIdHelper,
+  updateEnrollmentHelper,
+} from "../helpers/enrollments.helper";
 
 export const createEnrollment = async (
   req: Request,
@@ -10,11 +17,9 @@ export const createEnrollment = async (
   const { userId, welfareProgramId } = req.body;
 
   try {
-    const enrollment = await prisma.enrollment.create({
-      data: {
-        userId,
-        welfareProgramId,
-      },
+    const enrollment = await createEnrollmentHelper({
+      userId,
+      welfareProgramId,
     });
     res
       .status(201)
@@ -30,18 +35,7 @@ export const getAllEnrollments = async (
   next: NextFunction
 ) => {
   try {
-    const enrollments = await prisma.enrollment.findMany({
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-        welfareProgram: true,
-      },
-    });
+    const enrollments = await getAllEnrollmentsHelper();
     res.status(200).json({ enrollments });
   } catch (error) {
     next(new AppError("Error fetching enrollments", 500));
@@ -56,19 +50,7 @@ export const getEnrollmentById = async (
   const { id } = req.params;
 
   try {
-    const enrollment = await prisma.enrollment.findUnique({
-      where: { id },
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-        welfareProgram: true,
-      },
-    });
+    const enrollment = await getEnrollmentByIdHelper(id);
 
     if (!enrollment) {
       return next(new AppError("Enrollment not found", 404));
@@ -86,14 +68,19 @@ export const updateEnrollment = async (
   next: NextFunction
 ) => {
   const { id } = req.params;
-  const { welfareProgramId } = req.body;
+  const { welfareProgramId, userId } = req.body;
+
+  // Check if enrollment exists
+  const enrollment = await getEnrollmentByIdHelper(id);
+
+  if (!enrollment) {
+    return next(new AppError("Enrollment not found", 404));
+  }
 
   try {
-    const updatedEnrollment = await prisma.enrollment.update({
-      where: { id },
-      data: {
-        welfareProgramId,
-      },
+    const updatedEnrollment = await updateEnrollmentHelper(id, {
+      userId,
+      welfareProgramId,
     });
     res.status(200).json({
       message: "Enrollment updated successfully",
@@ -110,11 +97,14 @@ export const deleteEnrollment = async (
   next: NextFunction
 ) => {
   const { id } = req.params;
+  // Check if enrollment exists
+  const enrollment = await getEnrollmentByIdHelper(id);
 
+  if (!enrollment) {
+    return next(new AppError("Enrollment not found", 404));
+  }
   try {
-    await prisma.enrollment.delete({
-      where: { id },
-    });
+    await deleteEnrollmentHelper(id);
     res.status(200).json({ message: "Enrollment deleted successfully" });
   } catch (error) {
     next(new AppError("Error deleting enrollment", 500));
@@ -129,12 +119,7 @@ export const approveEnrollment = async (
   const { id } = req.params;
 
   try {
-    const updatedEnrollment = await prisma.enrollment.update({
-      where: { id },
-      data: {
-        status: "APPROVED",
-      },
-    });
+    const updatedEnrollment = await approveEnrollmentHelper(id);
     res.status(200).json({
       message: "Enrollment approved successfully",
       enrollment: updatedEnrollment,

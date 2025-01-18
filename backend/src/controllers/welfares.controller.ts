@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../utils/app-error";
-import prisma from "../config/db";
 import {
   createWelfareProgramHelper,
   deleteWelfareProgramHelper,
