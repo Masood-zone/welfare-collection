@@ -45,6 +45,24 @@ export const getEnrollmentByIdHelper = async (id: string) => {
   });
 };
 
+export const getEnrollmentsByUserIdHelper = async (data: {
+  userId: string;
+}) => {
+  return await prisma.enrollment.findMany({
+    where: { userId: data.userId },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+      welfareProgram: true,
+    },
+  });
+};
+
 export const findEnrollmentByIdHelper = async (id: string) => {
   return await prisma.enrollment.findUnique({ where: { id } });
 };

@@ -23,7 +23,7 @@ export function Banner() {
           <div className="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
             {user ? (
               <Button asChild size="lg">
-                <Link to="/apply">Apply for Welfare</Link>
+                <Link to="#welfare">Apply for Welfare</Link>
               </Button>
             ) : (
               <>

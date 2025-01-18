@@ -5,8 +5,12 @@ import {
   getWelfareProgramById,
   updateWelfareProgram,
   deleteWelfareProgram,
+  getEnrolledWelfareProgramsByUserId,
 } from "../../../controllers/welfares.controller";
-import { authenticateAdmin } from "../../../middleware/auth.middleware";
+import {
+  authenticateAdmin,
+  authenticateUser,
+} from "../../../middleware/auth.middleware";
 import {
   createWelfareProgramSchema,
   updateWelfareProgramSchema,
@@ -15,7 +19,13 @@ import { validateRequest } from "../../../middleware/validations/validations.mid
 
 const welfareProgramRoutes = Router();
 
-welfareProgramRoutes.get("/", authenticateAdmin, getAllWelfarePrograms);
+welfareProgramRoutes.get("/", authenticateUser, getAllWelfarePrograms);
+// Get user enrolled welfare programs
+welfareProgramRoutes.get(
+  "/enrolled/:id",
+  authenticateUser,
+  getEnrolledWelfareProgramsByUserId
+);
 welfareProgramRoutes.post(
   "/",
   authenticateAdmin,
@@ -28,7 +38,7 @@ welfareProgramRoutes.post(
     }
   }
 );
-welfareProgramRoutes.get("/:id", authenticateAdmin, getWelfareProgramById);
+welfareProgramRoutes.get("/:id", authenticateUser, getWelfareProgramById);
 welfareProgramRoutes.patch(
   "/:id",
   authenticateAdmin,

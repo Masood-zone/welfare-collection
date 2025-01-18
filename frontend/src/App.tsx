@@ -1,13 +1,14 @@
 import { ThemeProvider } from "./components/ui/theme-provider";
-// import { ModeToggle } from "@/components/ui/toggle-theme";
-import Login from "./pages/auth/login/login";
+import { RouterProvider } from "react-router-dom";
+
+import { Toaster } from "@/components/ui/sonner";
+import rootRoutes from "./routes/root.routes";
 
 export default function App() {
   return (
     <ThemeProvider>
-      <Login />
-      {/* Use this button where you want to toggle themes */}
-      {/* <ModeToggle /> */}
+      <RouterProvider router={rootRoutes} />
+      <Toaster />
     </ThemeProvider>
   );
 }

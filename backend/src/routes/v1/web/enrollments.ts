@@ -6,6 +6,7 @@ import {
   updateEnrollment,
   deleteEnrollment,
   approveEnrollment,
+  getEnrollmentByUserId,
 } from "../../../controllers/enrollments.controller";
 import {
   authenticateUser,
@@ -28,6 +29,7 @@ enrollmentRoutes.post(
 );
 enrollmentRoutes.get("/", authenticateUser, getAllEnrollments);
 enrollmentRoutes.get("/:id", authenticateUser, getEnrollmentById);
+enrollmentRoutes.get("/user/:id", authenticateUser, getEnrollmentByUserId);
 enrollmentRoutes.patch(
   "/:id",
   validateRequest(updateEnrollmentSchema),

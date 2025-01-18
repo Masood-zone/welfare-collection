@@ -6,6 +6,7 @@ import {
   deleteEnrollmentHelper,
   getAllEnrollmentsHelper,
   getEnrollmentByIdHelper,
+  getEnrollmentsByUserIdHelper,
   updateEnrollmentHelper,
 } from "../helpers/enrollments.helper";
 
@@ -59,6 +60,21 @@ export const getEnrollmentById = async (
     res.status(200).json({ enrollment });
   } catch (error) {
     next(new AppError("Error fetching enrollment", 500));
+  }
+};
+
+export const getEnrollmentByUserId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+
+  try {
+    const enrollments = await getEnrollmentsByUserIdHelper({ userId: id });
+    res.status(200).json({ enrollments });
+  } catch (error) {
+    next(new AppError("Error fetching enrollments", 500));
   }
 };
 
