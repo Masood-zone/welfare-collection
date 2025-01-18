@@ -18,15 +18,17 @@ model User {
   enrollments       Enrollment[]
   payments          Payment[]
   paymentTrackers   PaymentTracker[]
+  WelfarePrograms   WelfareProgram[]
 }
 
 model WelfareProgram {
   id            String      @id @default(cuid())
   name          String      @unique
   description   String
-  amount        Decimal
+  amount        Decimal     @default(0.0)
   paymentCycle  PaymentCycle
   createdBy     String      // Admin who created the program
+  createdByUser User       @relation(fields: [createdBy], references: [id])
   createdAt     DateTime    @default(now())
   enrollments   Enrollment[]
   payments      Payment[]
@@ -50,7 +52,7 @@ model Payment {
   user            User      @relation(fields: [userId], references: [id])
   welfareProgramId String
   welfareProgram  WelfareProgram @relation(fields: [welfareProgramId], references: [id])
-  amount          Decimal
+  amount          Decimal     @default(0.0)
   paymentDate     DateTime  @default(now())
   paymentMode     PaymentMode
   receiptNumber   String    @unique
@@ -70,7 +72,7 @@ model PaymentTracker {
 model Expense {
   id            String    @id @default(cuid())
   description   String
-  amount        Decimal
+  amount        Decimal     @default(0.0)
   welfareProgramId String
   welfareProgram WelfareProgram @relation(fields: [welfareProgramId], references: [id])
   recordedAt    DateTime  @default(now())
