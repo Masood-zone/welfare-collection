@@ -67,8 +67,10 @@ export const useLoginUser = () => {
 
 export const useUpdateUser = () => {
   const queryClient = useQueryClient();
+  const { setUser } = useUserStore();
+
   return useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: UpdateUser }) => {
+    mutationFn: async ({ id, data }: { id: string; data: UpdateUser }) => {
       try {
         const response = await updateUser(id, data);
         return response;
@@ -76,10 +78,11 @@ export const useUpdateUser = () => {
         throw error as Error;
       }
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
+      setUser(data.user);
       toast.success("Account updated successfully. ", {
-        description: "Please refresh to see changes",
+        description: "Try refreshing to see changes",
         duration: 5000,
       });
     },

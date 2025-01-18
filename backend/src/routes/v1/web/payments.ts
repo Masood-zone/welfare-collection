@@ -5,6 +5,7 @@ import {
   getPaymentById,
   updatePayment,
   deletePayment,
+  getUserPayments,
 } from "../../../controllers/payments.controller";
 import {
   authenticateUser,
@@ -26,6 +27,8 @@ paymentRoutes.post(
 );
 paymentRoutes.get("/", authenticateAdmin, getAllPayments);
 paymentRoutes.get("/:id", authenticateUser, getPaymentById);
+// Get User payments
+paymentRoutes.get("/user/:id", authenticateUser, getUserPayments);
 paymentRoutes.patch(
   "/:id",
   authenticateAdmin,

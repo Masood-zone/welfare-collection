@@ -5,7 +5,6 @@ import {
   getWelfareProgramById,
   updateWelfareProgram,
   deleteWelfareProgram,
-  getEnrolledWelfareProgramsByUserId,
 } from "../../../controllers/welfares.controller";
 import {
   authenticateAdmin,
@@ -20,12 +19,7 @@ import { validateRequest } from "../../../middleware/validations/validations.mid
 const welfareProgramRoutes = Router();
 
 welfareProgramRoutes.get("/", authenticateUser, getAllWelfarePrograms);
-// Get user enrolled welfare programs
-welfareProgramRoutes.get(
-  "/enrolled/:id",
-  authenticateUser,
-  getEnrolledWelfareProgramsByUserId
-);
+
 welfareProgramRoutes.post(
   "/",
   authenticateAdmin,

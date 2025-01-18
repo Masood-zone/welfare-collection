@@ -12,7 +12,7 @@ import {
 import { useUserStore } from "@/store/use-user.store";
 import { Link, useLocation } from "react-router-dom";
 import { Logo } from "@/assets";
-import { MenuIcon, X } from "lucide-react";
+import { Cog, DoorOpen, MenuIcon, User, X } from "lucide-react";
 import { ModeToggle } from "@/components/ui/toggle-theme";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -52,7 +52,7 @@ export function Navbar() {
                   className={`border-transparent ${
                     location.pathname === link.path
                       ? "text-primary border-b-2 border-primary"
-                      : "text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                      : "hover:border-gray-300 hover:text-primary-foreground"
                   } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium`}
                 >
                   {link.name}
@@ -87,12 +87,14 @@ export function Navbar() {
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
                       <DropdownMenuItem>
-                        <Link to="/profile">Profile</Link>
+                        <User />
+                        <Link to="/settings/accdount">Account</Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem>
+                      {/* <DropdownMenuItem>
                         <Link to="/dashboard">Dashboard</Link>
-                      </DropdownMenuItem>
+                      </DropdownMenuItem> */}
                       <DropdownMenuItem>
+                        <Cog />
                         <Link to="/settings">Settings</Link>
                       </DropdownMenuItem>
                     </DropdownMenuGroup>
@@ -154,26 +156,55 @@ export function Navbar() {
               ))}
             </div>
             {/* User Info */}
-            <div className="pt-4 pb-3 border-t border-gray-200">
+            <div className="pt-4 pb-3 border-y border-gray-200">
               {user ? (
-                <div className="flex items-center justify-between px-4">
-                  <div>
-                    <div className="text-base space-x-1">
-                      Welcome,
-                      <span className="text-primary font-medium ml-1">
-                        {user.name}
-                      </span>
+                <div className="flex flex-col items-start">
+                  <div className="flex items-center justify-between px-4">
+                    <div>
+                      <div className="text-base space-x-1">
+                        Welcome,
+                        <span className="text-primary font-medium ml-1">
+                          {user.name}
+                        </span>
+                      </div>
+                      <div className="text-sm font-medium text-gray-500">
+                        {user.email}
+                      </div>
                     </div>
-                    <div className="text-sm font-medium text-gray-500">
-                      {user.email}
+                    <div>
+                      <ModeToggle />
                     </div>
                   </div>
-                  <div>
-                    <ModeToggle />
+                  <div
+                    className="mt-4 w-full
+                    flex flex-col space-y-2 text-base font-medium
+                  "
+                  >
+                    <Link
+                      to="/settings/account"
+                      className="flex w-full hover:bg-primary-foreground space-x-2 px-4 py-2"
+                    >
+                      <User />
+                      <span>Account</span>
+                    </Link>
+                    <Link
+                      to="/settings"
+                      className="flex  w-full hover:bg-primary-foreground space-x-2 px-4 py-2"
+                    >
+                      <Cog />
+                      <span>Settings</span>
+                    </Link>
+                    <span
+                      className="cursor-pointer flex  w-full hover:bg-primary-foreground space-x-2 px-4 py-2"
+                      onClick={() => handleLogout()}
+                    >
+                      <DoorOpen />
+                      <span>Log out</span>
+                    </span>
                   </div>
                 </div>
               ) : (
-                <div className="flex justify-center space-x-4">
+                <div className="flex justify-center space-x-4 px-4">
                   <Button variant="default" asChild>
                     <Link to="/auth/login">Login</Link>
                   </Button>

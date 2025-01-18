@@ -48,10 +48,10 @@ interface Payments {
   amount: number;
   paymentDate: string;
   paymentMode: "CASH" | "CARD" | "MOMO";
-  recieptNumber: string;
+  receiptNumber: string;
   welfareProgram: Pick<
     WelfareProgram,
-    "id" | "name" | "description" | "amount" | "payemntCycle"
+    "id" | "name" | "description" | "amount" | "paymentCycle"
   >;
   user: Pick<User, "id" | "name" | "email" | "phoneNumber" | "role">;
 }
@@ -103,7 +103,10 @@ type EnrollmentLists = Pick<
 /*
  * Payment Types
  */
-type CreatePayment = Omit<Payments, "id" | "user" | "welfareProgram">;
+type CreatePayment = Omit<
+  Payments,
+  "id" | "user" | "welfareProgram" | "paymentDate" | "receiptNumber"
+>;
 type UpdatePayment = Partial<Omit<Payments, "user" | "welfareProgram">>;
 type PaymentLists = Pick<
   Payments,

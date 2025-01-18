@@ -105,7 +105,7 @@ export const loginUser = async (
     if (!isPasswordValid) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
-    const expiresIn = "1h"; // Token expires in 1 hour
+    const expiresIn = "1d"; // Token expires in 1 day
     const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, {
       expiresIn,
     });

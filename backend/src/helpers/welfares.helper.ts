@@ -31,16 +31,6 @@ export const getWelfareProgramByIdHelper = async (id: string) => {
   return await prisma.welfareProgram.findUnique({ where: { id } });
 };
 
-export const getEnrolledWelfareProgramsByUserIdHelper = async (id: string) => {
-  return await prisma.paymentTracker.findMany({
-    where: { userId: id },
-    include: {
-      welfareProgram: true,
-      payment: true,
-    },
-  });
-};
-
 // Find a welfare program by id
 export const findWelfareProgramByIdHelper = async (id: string) => {
   return await prisma.welfareProgram.findUnique({ where: { id } });

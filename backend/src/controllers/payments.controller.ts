@@ -5,6 +5,7 @@ import {
   deletePaymentHelper,
   getAllPaymentsHelper,
   getPaymentByIdHelper,
+  getPaymentsByUserIdHelper,
   updatePaymentHelper,
 } from "../helpers/payments.helper";
 
@@ -58,6 +59,26 @@ export const getPaymentById = async (
     res.status(200).json({ payment });
   } catch (error) {
     next(new AppError("Error fetching payment", 500));
+  }
+};
+
+export const getUserPayments = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+
+  try {
+    const payments = await getPaymentsByUserIdHelper(id);
+
+    if (!payments) {
+      return next(new AppError("Payments not found", 404));
+    }
+
+    res.status(200).json({ payments });
+  } catch (error) {
+    next(new AppError("Error fetching payments", 500));
   }
 };
 

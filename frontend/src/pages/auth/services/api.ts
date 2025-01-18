@@ -18,7 +18,7 @@ export const loginUser = async (data: LoginUser) => {
   }
 };
 
-export const updateUser = async (id: number, data: UpdateUser) => {
+export const updateUser = async (id: string, data: UpdateUser) => {
   try {
     const response = await api.patch(`/user/update/${id}`, data);
     return response.data;

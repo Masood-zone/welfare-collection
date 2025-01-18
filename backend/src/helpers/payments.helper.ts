@@ -74,6 +74,13 @@ export const getAllPaymentsHelper = async () => {
   });
 };
 
+export const getPaymentsByUserIdHelper = async (userId: string) => {
+  return await prisma.payment.findMany({
+    where: { userId },
+    include: { user: true, welfareProgram: true },
+  });
+};
+
 export const getPaymentByIdHelper = async (id: string) => {
   return await prisma.payment.findUnique({
     where: { id },
