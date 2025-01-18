@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -21,44 +15,64 @@ model User {
   password          String
   role              Role      @default(MEMBER) // MEMBER or ADMIN
   registeredAt      DateTime  @default(now())
-  welfareForms      WelfareForm[]
+  enrollments       Enrollment[]
   payments          Payment[]
   paymentTrackers   PaymentTracker[]
 }
 
-model WelfareForm {
-  id            String    @id @default(cuid())
-  userId        String
-  user          User      @relation(fields: [userId], references: [id])
-  paymentCycle  PaymentCycle
+model WelfareProgram {
+  id            String      @id @default(cuid())
+  name          String      @unique
+  description   String
   amount        Decimal
-  createdAt     DateTime  @default(now())
-  status        FormStatus @default(PENDING) // PENDING, APPROVED, REJECTED
+  paymentCycle  PaymentCycle
+  createdBy     String      // Admin who created the program
+  createdAt     DateTime    @default(now())
+  enrollments   Enrollment[]
+  payments      Payment[]
+  paymentTrackers PaymentTracker[]
+  expenses      Expense[]
+}
+
+model Enrollment {
+  id              String          @id @default(cuid())
+  userId          String
+  user            User            @relation(fields: [userId], references: [id])
+  welfareProgramId String
+  welfareProgram  WelfareProgram  @relation(fields: [welfareProgramId], references: [id])
+  status          EnrollmentStatus @default(PENDING) // PENDING, APPROVED
+  enrolledAt      DateTime        @default(now())
 }
 
 model Payment {
-  id            String    @id @default(cuid())
-  userId        String
-  user          User      @relation(fields: [userId], references: [id])
-  amount        Decimal
-  paymentDate   DateTime  @default(now())
-  paymentMode   PaymentMode
-  receiptNumber String    @unique
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  welfareProgramId String
+  welfareProgram  WelfareProgram @relation(fields: [welfareProgramId], references: [id])
+  amount          Decimal
+  paymentDate     DateTime  @default(now())
+  paymentMode     PaymentMode
+  receiptNumber   String    @unique
 }
 
 model PaymentTracker {
-  id            String    @id @default(cuid())
-  userId        String
-  user          User      @relation(fields: [userId], references: [id])
-  cycleStart    DateTime
-  cycleEnd      DateTime
-  paymentStatus PaymentStatus
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  welfareProgramId String
+  welfareProgram  WelfareProgram @relation(fields: [welfareProgramId], references: [id])
+  cycleStart      DateTime
+  cycleEnd        DateTime
+  paymentStatus   PaymentStatus
 }
 
 model Expense {
   id            String    @id @default(cuid())
   description   String
   amount        Decimal
+  welfareProgramId String
+  welfareProgram WelfareProgram @relation(fields: [welfareProgramId], references: [id])
   recordedAt    DateTime  @default(now())
   recordedBy    String
 }
@@ -88,6 +102,11 @@ enum FormStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+enum EnrollmentStatus {
+  PENDING
+  APPROVED
 }
 
 enum PaymentMode {
