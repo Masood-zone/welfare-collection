@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String    @id @default(cuid())
+  name              String
+  email             String    @unique
+  phoneNumber       String    @unique
+  password          String
+  role              Role      @default(MEMBER) // MEMBER or ADMIN
+  registeredAt      DateTime  @default(now())
+  welfareForms      WelfareForm[]
+  payments          Payment[]
+  paymentTrackers   PaymentTracker[]
+}
+
+model WelfareForm {
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+  paymentCycle  PaymentCycle
+  amount        Decimal
+  createdAt     DateTime  @default(now())
+  status        FormStatus @default(PENDING) // PENDING, APPROVED, REJECTED
+}
+
+model Payment {
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+  amount        Decimal
+  paymentDate   DateTime  @default(now())
+  paymentMode   PaymentMode
+  receiptNumber String    @unique
+}
+
+model PaymentTracker {
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+  cycleStart    DateTime
+  cycleEnd      DateTime
+  paymentStatus PaymentStatus
+}
+
+model Expense {
+  id            String    @id @default(cuid())
+  description   String
+  amount        Decimal
+  recordedAt    DateTime  @default(now())
+  recordedBy    String
+}
+
+model Analytics {
+  id                String    @id @default(cuid())
+  totalMembers      Int       @default(0)
+  totalRevenue      Decimal   @default(0.0)
+  recentPayments    Json      // Store recent transactions for analytics
+  monthlyPayments   Json      // Monthly revenue stats
+  weeklyPayments    Json      // Weekly revenue stats
+  dailyPayments     Json      // Daily revenue stats
+}
+
+enum Role {
+  MEMBER
+  ADMIN
+}
+
+enum PaymentCycle {
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
+enum FormStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum PaymentMode {
+  MOBILE_MONEY
+  CARD
+  CASH
+}
+
+enum PaymentStatus {
+  PAID
+  UNPAID
+  PREPAID
+}
