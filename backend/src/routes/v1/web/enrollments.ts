@@ -7,6 +7,7 @@ import {
   deleteEnrollment,
   approveEnrollment,
   getEnrollmentByUserId,
+  rejectEnrollment,
 } from "../../../controllers/enrollments.controller";
 import {
   authenticateUser,
@@ -40,5 +41,7 @@ enrollmentRoutes.delete("/:id", authenticateAdmin, deleteEnrollment);
 
 // Approval route
 enrollmentRoutes.patch("/approve/:id", authenticateAdmin, approveEnrollment);
+// Rejection route
+enrollmentRoutes.patch("/reject/:id", authenticateAdmin, rejectEnrollment);
 
 export default enrollmentRoutes;

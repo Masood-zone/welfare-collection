@@ -7,6 +7,7 @@ import {
   getAllEnrollmentsHelper,
   getEnrollmentByIdHelper,
   getEnrollmentsByUserIdHelper,
+  rejectEnrollmentHelper,
   updateEnrollmentHelper,
 } from "../helpers/enrollments.helper";
 
@@ -142,5 +143,23 @@ export const approveEnrollment = async (
     });
   } catch (error) {
     next(new AppError("Error approving enrollment", 500));
+  }
+};
+
+export const rejectEnrollment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+
+  try {
+    const updatedEnrollment = await rejectEnrollmentHelper(id);
+    res.status(200).json({
+      message: "Enrollment rejected successfully",
+      enrollment: updatedEnrollment,
+    });
+  } catch (error) {
+    next(new AppError("Error rejecting enrollment", 500));
   }
 };

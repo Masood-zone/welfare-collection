@@ -112,6 +112,7 @@ enum FormStatus {
 enum EnrollmentStatus {
   PENDING
   APPROVED
+  REJECTED
 }
 
 enum PaymentMode {

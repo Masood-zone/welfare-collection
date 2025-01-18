@@ -101,3 +101,17 @@ export const approveEnrollmentHelper = async (id: string) => {
   });
   return result;
 };
+export const rejectEnrollmentHelper = async (id: string) => {
+  const enrollment = await prisma.enrollment.findUnique({ where: { id } });
+  if (!enrollment) {
+    throw new AppError("Enrollment not found", 404);
+  }
+
+  const result = await prisma.enrollment.update({
+    where: { id },
+    data: {
+      status: "REJECTED",
+    },
+  });
+  return result;
+};
