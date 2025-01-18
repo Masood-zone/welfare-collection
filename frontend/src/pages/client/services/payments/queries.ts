@@ -1,6 +1,12 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { createPayment, fetchMyPayments, updatePayment } from "./api";
+import {
+  createPayment,
+  fetchMyPayments,
+  paymentDetails,
+  trackMyPayments,
+  updatePayment,
+} from "./api";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
@@ -36,5 +42,19 @@ export const useUpdatePayment = (userId: string) => {
   return useMutation({
     mutationFn: (data: UpdatePayment) => updatePayment(data),
     mutationKey: ["myUpdatePayment", userId],
+  });
+};
+
+export const useTrackMyPayments = (userId: string) => {
+  return useQuery({
+    queryKey: ["myPayments", userId],
+    queryFn: () => trackMyPayments(userId),
+  });
+};
+
+export const useTrackPaymentDetails = (id: string) => {
+  return useQuery({
+    queryKey: ["trackPaymentDetails", id],
+    queryFn: () => paymentDetails(id),
   });
 };

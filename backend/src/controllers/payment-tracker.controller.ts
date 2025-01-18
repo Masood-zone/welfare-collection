@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { AppError } from "../utils/app-error";
 import {
   deletePaymentTrackerById,
+  getPaymentTrackerById,
   getPaymentTrackersByUserId,
   getPaymentTrackersByWelfareProgramAndUserId,
 } from "../helpers/payment-tracker.helper";
@@ -47,6 +48,25 @@ export const trackPaymentsByWelfareProgramAndUser = async (
     res.status(200).json({ paymentTrackers });
   } catch (error) {
     next(new AppError("Error fetching payment trackers", 500));
+  }
+};
+
+export const trackPaymentsDetails = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  // Get payment tracker by ID
+  const { id } = req.params;
+
+  try {
+    const paymentTracker = await getPaymentTrackerById(id);
+    if (!paymentTracker) {
+      return next(new AppError("Payment tracker not found", 404));
+    }
+    res.status(200).json({ paymentTracker });
+  } catch (error) {
+    next(new AppError("Error fetching payment tracker details", 500));
   }
 };
 

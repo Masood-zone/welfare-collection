@@ -119,6 +119,21 @@ type PaymentLists = Pick<
   | "welfareProgram"
 >;
 
+interface PaymentTrack {
+  id: string;
+  cycleStart: string;
+  cycleEnd: string;
+  paymentStatus: string;
+  welfareProgram: {
+    name: string;
+    amount: string;
+  };
+  payment?: {
+    amount: string;
+    paymentDate: string;
+  };
+}
+
 /*
  * Welfare Program Types
  */

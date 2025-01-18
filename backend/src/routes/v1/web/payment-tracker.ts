@@ -3,6 +3,7 @@ import {
   deletePaymentTracker,
   trackPaymentsByUserId,
   trackPaymentsByWelfareProgramAndUser,
+  trackPaymentsDetails,
 } from "../../../controllers/payment-tracker.controller";
 import { authenticateUser } from "../../../middleware/auth.middleware";
 
@@ -15,7 +16,8 @@ paymentTrackerRoutes.get(
   authenticateUser,
   trackPaymentsByUserId
 );
-
+// Track payment details
+paymentTrackerRoutes.get("/:id", authenticateUser, trackPaymentsDetails);
 // Track payments by welfare program ID and user ID
 paymentTrackerRoutes.get(
   "/welfare-program/:welfareProgramId",

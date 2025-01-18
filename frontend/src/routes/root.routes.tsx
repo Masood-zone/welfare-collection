@@ -120,12 +120,32 @@ const rootRoutes = createBrowserRouter(
               <Route
                 path="track-payments"
                 lazy={async () => {
-                  const { default: TrackPayments } = await import(
-                    "@/pages/client/settings/track-payments/track-payments"
+                  const { default: PaymentsTrackerLayout } = await import(
+                    "@/pages/client/settings/track-payments/index"
                   );
-                  return { Component: TrackPayments };
+                  return { Component: PaymentsTrackerLayout };
                 }}
-              />
+              >
+                <Route
+                  index
+                  lazy={async () => {
+                    const { default: ViewPayments } = await import(
+                      "@/pages/client/settings/track-payments/view-payments"
+                    );
+                    return { Component: ViewPayments };
+                  }}
+                />
+                {/* Track a payment */}
+                <Route
+                  path=":id"
+                  lazy={async () => {
+                    const { default: TrackPayment } = await import(
+                      "@/pages/client/settings/track-payments/track-payment"
+                    );
+                    return { Component: TrackPayment };
+                  }}
+                />
+              </Route>
               {/* Welfares */}
               <Route
                 path="welfares"

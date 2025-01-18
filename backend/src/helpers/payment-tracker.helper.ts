@@ -39,6 +39,21 @@ export const getPaymentTrackersByWelfareProgramAndUserId = async (
 };
 
 /**
+ * Details of payment being tracked.
+ * @param data - The data for tracking payment.
+ */
+export const getPaymentTrackerById = async (id: string) => {
+  return await prisma.paymentTracker.findUnique({
+    where: { id },
+    include: {
+      welfareProgram: true, // Include welfare program details
+      user: true, // Include user details
+      payment: true, // Include associated payments
+    },
+  });
+};
+
+/**
  * Delete payment tracker by ID.
  * @param id - The ID of the payment tracker.
  */
