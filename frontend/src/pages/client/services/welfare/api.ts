@@ -14,3 +14,18 @@ export const fetchUserEnrolledWelfarePrograms = async (id: string) => {
   const response = await api.get(`/enrollments/user/${id}`);
   return response.data?.enrollments;
 };
+
+export const resubmitEnrollment = async (
+  id: string,
+  data: {
+    userId: string;
+    welfareProgramId: string;
+  }
+) => {
+  const response = await api.patch(
+    `/enrollments/resubmit/${id}
+    `,
+    data
+  );
+  return response.data;
+};

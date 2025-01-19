@@ -119,6 +119,6 @@ export const deleteWelfareProgram = async (
     await deleteWelfareProgramHelper(id);
     res.status(200).json({ message: "Welfare program deleted successfully" });
   } catch (error) {
-    next(new AppError("Error deleting welfare program", 500));
+    next(new AppError(`Error deleting welfare program ${error}`, 500));
   }
 };

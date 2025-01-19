@@ -8,6 +8,7 @@ import {
   approveEnrollment,
   getEnrollmentByUserId,
   rejectEnrollment,
+  resubmitEnrollment,
 } from "../../../controllers/enrollments.controller";
 import {
   authenticateUser,
@@ -28,7 +29,7 @@ enrollmentRoutes.post(
   validateRequest(createEnrollmentSchema),
   createEnrollment
 );
-enrollmentRoutes.get("/", authenticateUser, getAllEnrollments);
+enrollmentRoutes.get("/", authenticateAdmin, getAllEnrollments);
 enrollmentRoutes.get("/:id", authenticateUser, getEnrollmentById);
 enrollmentRoutes.get("/user/:id", authenticateUser, getEnrollmentByUserId);
 enrollmentRoutes.patch(
@@ -38,7 +39,8 @@ enrollmentRoutes.patch(
   updateEnrollment
 );
 enrollmentRoutes.delete("/:id", authenticateAdmin, deleteEnrollment);
-
+// Re-submission route
+enrollmentRoutes.patch("/resubmit/:id", authenticateUser, resubmitEnrollment);
 // Approval route
 enrollmentRoutes.patch("/approve/:id", authenticateAdmin, approveEnrollment);
 // Rejection route

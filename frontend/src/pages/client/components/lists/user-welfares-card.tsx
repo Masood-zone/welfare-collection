@@ -59,7 +59,9 @@ export function UserWelfaresCard({ welfare }: WelfareCardProps) {
         )}
         {status === "REJECTED" && (
           <Button asChild className="w-full">
-            <Link to={`/apply/${welfareProgram.id}`}>Re-submit</Link>
+            <Link to={`/settings/resubmit/${welfareProgram.id}/${welfare.id}`}>
+              Re-submit
+            </Link>
           </Button>
         )}
       </CardFooter>

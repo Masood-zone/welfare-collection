@@ -42,15 +42,21 @@ export const updateUser = async (
   });
 };
 
-// export const findUserById = async (id: string) => {
-//   return prisma.user.findUnique({
-//     where: { id },
-//     select: {
-//       id: true,
-//       name: true,
-//       email: true,
-//       phoneNumber: true,
-//       role: true,
-//     },
-//   });
-// };
+export const findUserById = async (id: string) => {
+  return prisma.user.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phoneNumber: true,
+      role: true,
+    },
+  });
+};
+
+export const deleteUserById = async (id: string) => {
+  return prisma.user.delete({
+    where: { id },
+  });
+};

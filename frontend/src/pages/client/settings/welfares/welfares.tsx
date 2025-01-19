@@ -16,6 +16,7 @@ export default function Welfares() {
     welfares?.filter(
       (welfare: WelfareProgram) => welfare.status === activeTab
     ) || [];
+  console.log(filteredWelfares);
 
   return (
     <div className="container mx-auto px-4 py-8">

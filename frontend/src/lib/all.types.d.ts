@@ -23,7 +23,7 @@ interface WelfareProgram {
   description: string;
   amount: number;
   paymentCycle: "MONTHLY" | "DAILY" | "WEEKLY";
-  createdBy: string;
+  createdBy?: string;
   createByUser: Pick<User, "id" | "name" | "email" | "phoneNumber" | "role">;
   status?: string;
 }
@@ -81,6 +81,20 @@ interface AuthState {
   setUser: (user: User) => void;
   clearUser: () => void;
 }
+// Custom Button Props
+interface LoadingButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  isLoading?: boolean;
+  icon?: React.ReactNode;
+  children: React.ReactNode;
+  variant?:
+    | "secondary"
+    | "link"
+    | "default"
+    | "outline"
+    | "destructive"
+    | "ghost";
+}
 
 /*
  * User Types
@@ -88,6 +102,7 @@ interface AuthState {
 type RegisterUser = Omit<User, "id" | "role" | "token">;
 type LoginUser = Pick<User, "email" | "password">;
 type UpdateUser = Partial<Omit<User, "role">>;
+type UserLists = Pick<User, "id" | "name" | "email" | "phoneNumber" | "role">;
 
 /*
  * Enrollment Types
@@ -137,14 +152,13 @@ interface PaymentTrack {
 /*
  * Welfare Program Types
  */
-type CreateWelfareProgram = Omit<
-  WelfareProgram,
-  "id" | "createdBy" | "createByUser"
+type CreateWelfareProgram = Omit<WelfareProgram, "createdByUser", "id">;
+type UpdateWelfareProgram = Partial<
+  Omit<WelfareProgram, "createdByUser", "id">
 >;
-type UpdateWelfareProgram = Partial<Omit<WelfareProgram, "createByUser">>;
 type WelfareProgramLists = Pick<
   WelfareProgram,
-  "id" | "name" | "description" | "amount" | "payemntCycle" | "createByUser"
+  "id" | "name" | "description" | "amount" | "paymentCycle" | "createdByUser"
 >;
 
 /*
@@ -181,4 +195,12 @@ type TrackPaymentLists = Pick<
 interface ErrorResponse {
   status: number;
   message: string;
+}
+
+// Admin header props
+interface HeaderProps {
+  title: string;
+  description: string;
+  className?: string;
+  buttons: ButtonInfo[];
 }

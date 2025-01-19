@@ -7,7 +7,7 @@ import {
   Route,
   createRoutesFromElements,
 } from "react-router-dom";
-import { UserAccountProtected } from "./protected.routes";
+import { AdminProtectedRoute, UserAccountProtected } from "./protected.routes";
 
 const rootRoutes = createBrowserRouter(
   createRoutesFromElements(
@@ -156,6 +156,16 @@ const rootRoutes = createBrowserRouter(
                   return { Component: Welfares };
                 }}
               />
+              {/* Resubmit enrollment */}
+              <Route
+                path="resubmit/:id/:enrollmentId"
+                lazy={async () => {
+                  const { default: ResubmitEnrollment } = await import(
+                    "@/pages/client/re-submit/re-submit"
+                  );
+                  return { Component: ResubmitEnrollment };
+                }}
+              />
               {/* Not Found */}
               <Route path="*" element={<NotFound />} />
             </Route>
@@ -214,6 +224,182 @@ const rootRoutes = createBrowserRouter(
           <Route path="*" element={<NotFound />} />
         </Route>
         {/* Admin Routes */}
+        <Route element={<AdminProtectedRoute />}>
+          <Route
+            path="admin"
+            lazy={async () => {
+              const { default: AdminLayout } = await import(
+                "@/pages/admin/pages/layout"
+              );
+              return { Component: AdminLayout };
+            }}
+          >
+            {/* Dashboard */}
+            <Route
+              index
+              lazy={async () => {
+                const { default: Dashboard } = await import(
+                  "@/pages/admin/pages/dashboard/dashboard"
+                );
+                return { Component: Dashboard };
+              }}
+            />
+            {/* Members */}
+            <Route
+              path="members"
+              lazy={async () => {
+                const { default: MembersLayout } = await import(
+                  "@/pages/admin/pages/members"
+                );
+                return { Component: MembersLayout };
+              }}
+            >
+              <Route
+                index
+                lazy={async () => {
+                  const { default: Members } = await import(
+                    "@/pages/admin/pages/members/members"
+                  );
+                  return { Component: Members };
+                }}
+              />
+              <Route
+                path="add"
+                lazy={async () => {
+                  const { default: AddMembers } = await import(
+                    "@/pages/admin/pages/members/add/add-members"
+                  );
+                  return { Component: AddMembers };
+                }}
+              />
+              <Route
+                path="edit/:id"
+                lazy={async () => {
+                  const { default: EditMember } = await import(
+                    "@/pages/admin/pages/members/edit/edit-member"
+                  );
+                  return { Component: EditMember };
+                }}
+              />
+            </Route>
+            {/* Enrollment */}
+            <Route
+              path="enrollment"
+              lazy={async () => {
+                const { default: EnrollmentLayout } = await import(
+                  "@/pages/admin/pages/enrollments"
+                );
+                return { Component: EnrollmentLayout };
+              }}
+            >
+              <Route
+                index
+                lazy={async () => {
+                  const { default: Enrollments } = await import(
+                    "@/pages/admin/pages/enrollments/enrollments"
+                  );
+                  return { Component: Enrollments };
+                }}
+              />
+              <Route
+                path="add"
+                lazy={async () => {
+                  const { default: AddEnrollment } = await import(
+                    "@/pages/admin/pages/enrollments/add/add-enrollment"
+                  );
+                  return { Component: AddEnrollment };
+                }}
+              />
+              <Route
+                path="edit/:id"
+                lazy={async () => {
+                  const { default: EditEnrollment } = await import(
+                    "@/pages/admin/pages/enrollments/edit/edit-enrollment"
+                  );
+                  return { Component: EditEnrollment };
+                }}
+              />
+            </Route>
+            {/* Welfares */}
+            <Route
+              path="welfares"
+              lazy={async () => {
+                const { default: AdminWelfaresLayout } = await import(
+                  "@/pages/admin/pages/welfares"
+                );
+                return { Component: AdminWelfaresLayout };
+              }}
+            >
+              <Route
+                index
+                lazy={async () => {
+                  const { default: AdminWelfares } = await import(
+                    "@/pages/admin/pages/welfares/welfares"
+                  );
+                  return { Component: AdminWelfares };
+                }}
+              />
+              <Route
+                path="add"
+                lazy={async () => {
+                  const { default: AddWelfare } = await import(
+                    "@/pages/admin/pages/welfares/add/add-welfare"
+                  );
+                  return { Component: AddWelfare };
+                }}
+              />
+              <Route
+                path="edit/:id"
+                lazy={async () => {
+                  const { default: EditWelfare } = await import(
+                    "@/pages/admin/pages/welfares/edit/edit-welfare"
+                  );
+                  return { Component: EditWelfare };
+                }}
+              />
+            </Route>
+            {/* Expenses */}
+            <Route
+              path="expenses"
+              lazy={async () => {
+                const { default: ExpensesLayout } = await import(
+                  "@/pages/admin/pages/expenses"
+                );
+                return { Component: ExpensesLayout };
+              }}
+            >
+              <Route
+                index
+                lazy={async () => {
+                  const { default: Expenses } = await import(
+                    "@/pages/admin/pages/expenses/expenses"
+                  );
+                  return { Component: Expenses };
+                }}
+              />
+              <Route
+                path="add"
+                lazy={async () => {
+                  const { default: AddExpense } = await import(
+                    "@/pages/admin/pages/expenses/add/add-expense"
+                  );
+                  return { Component: AddExpense };
+                }}
+              />
+              <Route
+                path="edit/:id"
+                lazy={async () => {
+                  const { default: EditExpense } = await import(
+                    "@/pages/admin/pages/expenses/edit/edit-expense"
+                  );
+                  return { Component: EditExpense };
+                }}
+              />
+            </Route>
+            {/* Settings */}
+            <Route path="*" element={<NotFound />} />
+          </Route>
+        </Route>
         {/* Not Found */}
         <Route path="*" element={<NotFound />} />
       </Route>

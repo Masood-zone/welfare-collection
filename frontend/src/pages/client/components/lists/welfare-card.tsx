@@ -42,8 +42,18 @@ export function WelfareCard({
           {status && (
             <div className="flex items-center">
               <span className="text-sm text-muted-foreground">Status:</span>
-              <span className="text-sm text-primary font-semibold ml-1">
-                {status === "PENDING" ? "PENDING APPROVAL" : status}
+              <span
+                className={`text-sm 
+                ${
+                  status === "APPROVED"
+                    ? "text-primary"
+                    : status === "REJECTED"
+                    ? "text-destructive"
+                    : "text-muted-foreground"
+                }
+                font-semibold ml-1`}
+              >
+                {status}
               </span>
             </div>
           )}
