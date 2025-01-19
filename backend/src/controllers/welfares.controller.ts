@@ -2,11 +2,13 @@ import { Request, Response, NextFunction } from "express";
 import { AppError } from "../utils/app-error";
 import {
   createWelfareProgramHelper,
-  deleteWelfareProgramHelper,
   findWelfareProgramByIdHelper,
   getAllWelfareProgramsHelper,
   getWelfareProgramByIdHelper,
+  getWelfareProgramExpensesHelper,
+  getWelfareProgramTotalsHelper,
   updateWelfareProgramHelper,
+  deleteWelfareProgramHelper,
 } from "../helpers/welfares.helper";
 
 export const createWelfareProgram = async (
@@ -120,5 +122,39 @@ export const deleteWelfareProgram = async (
     res.status(200).json({ message: "Welfare program deleted successfully" });
   } catch (error) {
     next(new AppError(`Error deleting welfare program ${error}`, 500));
+  }
+};
+
+// Totals & Expenses
+export const getWelfareProgramTotals = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+
+  try {
+    const totals = await getWelfareProgramTotalsHelper(id);
+    if (!totals) {
+      return next(new AppError("Welfare program not found", 404));
+    }
+    res.status(200).json({ totals });
+  } catch (error) {
+    next(new AppError("Error fetching welfare program totals", 500));
+  }
+};
+
+export const getWelfareProgramExpenses = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+
+  try {
+    const expenses = await getWelfareProgramExpensesHelper(id);
+    res.status(200).json({ expenses });
+  } catch (error) {
+    next(new AppError("Error fetching welfare program expenses", 500));
   }
 };

@@ -164,7 +164,7 @@ type WelfareProgramLists = Pick<
 /*
  * Expenses Types
  */
-type CreateExpense = Omit<Expenses, "id" | "recordedBy" | "welfareProgram">;
+type CreateExpense = Omit<Expenses, "id" | "welfareProgram">;
 type UpdateExpense = Partial<Omit<Expenses, "recordedBy" | "welfareProgram">>;
 type ExpenseLists = Pick<
   Expenses,

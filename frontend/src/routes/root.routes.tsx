@@ -378,12 +378,21 @@ const rootRoutes = createBrowserRouter(
                 }}
               />
               <Route
-                path="add"
+                path=":id/create"
                 lazy={async () => {
                   const { default: AddExpense } = await import(
                     "@/pages/admin/pages/expenses/add/add-expense"
                   );
                   return { Component: AddExpense };
+                }}
+              />
+              <Route
+                path=":id"
+                lazy={async () => {
+                  const { default: ViewExpense } = await import(
+                    "@/pages/admin/pages/expenses/[id]/expense"
+                  );
+                  return { Component: ViewExpense };
                 }}
               />
               <Route

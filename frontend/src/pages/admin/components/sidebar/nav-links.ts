@@ -42,10 +42,10 @@ export const data = {
           title: "Expenses",
           url: "/admin/expenses",
         },
-        {
-          title: "Accounting",
-          url: "/admin/accounting",
-        },
+        // {
+        //   title: "Accounting",
+        //   url: "/admin/accounting",
+        // },
       ],
     },
     {
