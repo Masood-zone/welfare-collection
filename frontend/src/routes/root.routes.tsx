@@ -397,6 +397,34 @@ const rootRoutes = createBrowserRouter(
               />
             </Route>
             {/* Settings */}
+            <Route
+              path="settings"
+              lazy={async () => {
+                const { default: AdminSettings } = await import(
+                  "@/pages/admin/pages/settings"
+                );
+                return { Component: AdminSettings };
+              }}
+            >
+              <Route
+                index
+                lazy={async () => {
+                  const { default: AdminSettings } = await import(
+                    "@/pages/admin/pages/settings/settings"
+                  );
+                  return { Component: AdminSettings };
+                }}
+              />
+              <Route
+                path="account"
+                lazy={async () => {
+                  const { default: AdminAccount } = await import(
+                    "@/pages/admin/pages/settings/account/account"
+                  );
+                  return { Component: AdminAccount };
+                }}
+              />
+            </Route>
             <Route path="*" element={<NotFound />} />
           </Route>
         </Route>

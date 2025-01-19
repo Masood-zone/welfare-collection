@@ -1,4 +1,4 @@
-import { BadgeCheck, Bell, ChevronsUpDown, LogOut } from "lucide-react";
+import { BadgeCheck, Bell, ChevronsUpDown, Layout, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -18,6 +18,7 @@ import {
 import { useUserStore } from "@/store/use-user.store";
 import { ThemeToggle } from "./admin-theme-toggle";
 import { InfoTooltip } from "@/components/shared/tooltip/tooltip";
+import { Link } from "react-router-dom";
 
 export function NavUser() {
   const { user } = useUserStore();
@@ -79,10 +80,18 @@ export function NavUser() {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
+              <Link to="/">
+                <DropdownMenuItem>
+                  <Layout />
+                  Home
+                </DropdownMenuItem>
+              </Link>
+              <Link to="/admin/settings/account">
+                <DropdownMenuItem>
+                  <BadgeCheck />
+                  Account
+                </DropdownMenuItem>
+              </Link>
               <DropdownMenuItem>
                 <Bell />
                 Notifications
