@@ -28,7 +28,7 @@ model WelfareProgram {
   amount        Decimal     @default(0.0)
   paymentCycle  PaymentCycle
   createdBy     String      // Admin who created the program
-  createdByUser User       @relation(fields: [createdBy], references: [id])
+  createdByUser User       @relation(fields: [createdBy], references: [id],onDelete: Cascade)
   createdAt     DateTime    @default(now())
  enrollments    Enrollment[]     
   payments       Payment[]        
@@ -49,7 +49,7 @@ model Enrollment {
 model Payment {
   id              String    @id @default(cuid())
   userId          String
-  user            User      @relation(fields: [userId], references: [id])
+  user            User      @relation(fields: [userId], references: [id],onDelete: Cascade)
   welfareProgramId String
   welfareProgram  WelfareProgram @relation(fields: [welfareProgramId], references: [id], onDelete: Cascade)
   amount          Decimal     @default(0.0)
@@ -57,6 +57,9 @@ model Payment {
   paymentMode     PaymentMode
   receiptNumber   String    @unique
   paymentTrackers PaymentTracker[]
+  paystackreference String?
+  access_code String?
+  status          PaymentStatus?
 }
 
 model PaymentTracker {
@@ -69,7 +72,7 @@ model PaymentTracker {
   cycleEnd        DateTime
   paymentStatus   PaymentStatus
   paymentId       String
-  payment         Payment   @relation(fields: [paymentId], references: [id])
+  payment         Payment   @relation(fields: [paymentId], references: [id], onDelete: Cascade)
 }
 
 model Expense {

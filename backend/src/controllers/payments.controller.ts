@@ -6,6 +6,8 @@ import {
   getAllPaymentsHelper,
   getPaymentByIdHelper,
   getPaymentsByUserIdHelper,
+  initializePaystackTransaction,
+  updatePaymentByReferenceHelper,
   updatePaymentHelper,
 } from "../helpers/payments.helper";
 
@@ -17,15 +19,57 @@ export const createPayment = async (
   const { userId, welfareProgramId, amount, paymentMode } = req.body;
 
   try {
+    // Create a cash payment
     const payment = await createPaymentHelper({
       userId,
       welfareProgramId,
       amount,
       paymentMode,
+      reference: "", // No Paystack reference for cash payments
+      access_code: "", // No access code for cash payments
+      status: "PAID", // Cash payments are considered paid immediately
     });
-    res.status(201).json({ message: "Payment created successfully", payment });
+    res
+      .status(201)
+      .json({ message: "Cash payment created successfully", payment });
   } catch (error) {
-    next(new AppError("Error creating payment", 500));
+    next(new AppError("Error creating cash payment", 500));
+  }
+};
+
+export const initializePaystackPayment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { userId, email, welfareProgramId, amount, paymentMode } = req.body;
+
+  try {
+    // Initialize paystack transaction
+    const paystackResponse = await initializePaystackTransaction({
+      amount: amount * 100,
+      email: email,
+      metadata: {
+        userId,
+        welfareProgramId,
+        paymentMode,
+      },
+    });
+    // Create a pending payment
+    const payment = await createPaymentHelper({
+      userId,
+      welfareProgramId,
+      amount,
+      paymentMode,
+      reference: paystackResponse.reference,
+      access_code: paystackResponse.access_code,
+      status: "UNPAID",
+    });
+    res
+      .status(201)
+      .json({ message: "Paystack payment initialized successfully", payment });
+  } catch (error) {
+    next(new AppError("Error initializing Paystack payment", 500));
   }
 };
 
@@ -82,6 +126,34 @@ export const getUserPayments = async (
   }
 };
 
+export const updatePaymentByReference = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id, reference } = req.params;
+  const { status } = req.body;
+
+  try {
+    const updatedPayment = await updatePaymentByReferenceHelper(
+      id,
+      reference,
+      status
+    );
+
+    if (!updatedPayment) {
+      return next(new AppError("Payment not found", 404));
+    }
+
+    res.status(200).json({
+      message: "Payment updated successfully",
+      payment: updatedPayment,
+    });
+  } catch (error) {
+    next(new AppError("Error updating payment", 500));
+  }
+};
+
 export const updatePayment = async (
   req: Request,
   res: Response,
@@ -127,6 +199,6 @@ export const deletePayment = async (
     await deletePaymentHelper(id);
     res.status(200).json({ message: "Payment deleted successfully" });
   } catch (error) {
-    next(new AppError("Error deleting payment", 500));
+    next(new AppError(`Error deleting payment ${error}`, 500));
   }
 };

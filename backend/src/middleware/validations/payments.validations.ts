@@ -13,12 +13,15 @@ export const createPaymentSchema = Joi.object({
       "number.base": "Amount must be a valid number",
       "number.positive": "Amount must be greater than zero",
     }),
-  paymentMode: Joi.string().valid(" MOMO", "CARD", "CASH").required().messages({
+  paymentMode: Joi.string().valid("MOMO", "CARD", "CASH").required().messages({
     "any.only": "Payment method must be one of MOMO, CARD, or CASH",
   }),
   welfareProgramId: Joi.string().required().messages({
     "string.empty": "Welfare program ID is required",
     "string.uuid": "Welfare program ID must be a valid UUID",
+  }),
+  email: Joi.string().email().optional().messages({
+    "string.email": "Email must be a valid email address",
   }),
 });
 

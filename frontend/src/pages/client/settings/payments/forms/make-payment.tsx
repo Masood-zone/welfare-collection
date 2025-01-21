@@ -3,24 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-
+import { Form } from "@/components/ui/form";
 import {
   Card,
   CardContent,
@@ -28,31 +11,86 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useCreatePayment } from "@/pages/client/services/payments/queries";
-import { Link } from "react-router-dom";
+import {
+  useCreatePayment,
+  useInitializePaystackPayment,
+  useUpdatePaymentStatus,
+} from "@/pages/client/services/payments/queries";
+import { Link, useNavigate } from "react-router-dom";
 import { useFetchUserEnrolledWelfarePrograms } from "@/pages/client/services/welfare/queries";
-
-const formSchema = z.object({
-  welfareProgramId: z.string(),
-  paymentMode: z.enum(["CASH", "CARD", "MOMO"]),
-  amount: z.coerce.number().min(1).max(100000),
-});
+import PaystackPop from "@paystack/inline-js";
+import {
+  AmountInput,
+  PaymentModeSelect,
+  WelfareProgramSelect,
+} from "./payment-form-components";
+import { toast } from "sonner";
+import { formSchema } from "./form-schema";
+const paystackPublicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
 
 export default function MakePayment() {
   const { user } = useUserStore();
-  const { mutateAsync: createPayment, isPending } = useCreatePayment();
+  const navigate = useNavigate();
+  const { mutateAsync: createPayment, isPending: isCreatingPayment } =
+    useCreatePayment();
+  const {
+    mutateAsync: initializePaystackPayment,
+    isPending: isInitializingPaystack,
+  } = useInitializePaystackPayment();
+  const { mutateAsync: updatePaymentStatus } = useUpdatePaymentStatus(
+    user?.id ?? ""
+  );
   const { data: welfarePrograms, isLoading } =
     useFetchUserEnrolledWelfarePrograms(user?.id ?? "");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
 
+  const handlePaystackPayment = async (paymentData: PaymentData) => {
+    const popup = new PaystackPop();
+    popup.newTransaction({
+      key: paystackPublicKey || "",
+      email: user?.email || "",
+      amount: paymentData.amount * 100, // Convert to pesewas
+      currency: "GHS",
+      reference: paymentData.paystackreference,
+      onSuccess: async () => {
+        try {
+          await updatePaymentStatus({
+            id: paymentData.id,
+            reference: paymentData.paystackreference,
+            status: "PAID",
+          });
+        } catch (error) {
+          console.error("Error updating payment status:", error);
+        } finally {
+          navigate("/settings/payments");
+        }
+      },
+      onCancel: () => {
+        console.log("Payment canceled");
+        toast.error("Payment canceled", {
+          description: "You have canceled the payment process.",
+        });
+      },
+    });
+  };
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      await createPayment({
-        userId: user?.id ?? "",
-        ...values,
-      });
+      if (values.paymentMode === "CASH") {
+        await createPayment({
+          userId: user?.id ?? "",
+          email: user?.email ?? "",
+          ...values,
+        });
+      } else {
+        const paymentData = await initializePaystackPayment({
+          userId: user?.id ?? "",
+          email: user?.email ?? "",
+          ...values,
+        });
+        handlePaystackPayment(paymentData.payment);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -80,99 +118,22 @@ export default function MakePayment() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
               <div className="grid grid-cols-12 gap-4">
                 <div className="col-span-4">
-                  <FormField
+                  <WelfareProgramSelect
                     control={form.control}
-                    name="welfareProgramId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Welfare Program</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a welfare program" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {isLoading ? (
-                              <SelectItem value="loading">
-                                Loading...
-                              </SelectItem>
-                            ) : (
-                              welfarePrograms?.map((program: Enrollments) => (
-                                <SelectItem
-                                  key={program.welfareProgramId}
-                                  value={program.welfareProgramId}
-                                >
-                                  {program.welfareProgram.name}
-                                </SelectItem>
-                              ))
-                            )}
-                          </SelectContent>
-                        </Select>
-                        <FormDescription>
-                          Select a welfare program
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    welfarePrograms={welfarePrograms}
+                    isLoading={isLoading}
                   />
                 </div>
               </div>
-
-              <FormField
-                control={form.control}
-                name="paymentMode"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Payment Mode</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a valid payment mode" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="CASH">CASH</SelectItem>
-                        <SelectItem value="CARD">CARD</SelectItem>
-                        <SelectItem value="MOMO">Mobile Money</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>
-                      You can select any of these payment modes.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="amount"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Amount</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter an amount"
-                        type="number"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      This is amount you are to pay
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit">
-                {isPending ? "Processing..." : "Make Payment"}
+              <PaymentModeSelect control={form.control} />
+              <AmountInput control={form.control} />
+              <Button
+                type="submit"
+                disabled={isCreatingPayment || isInitializingPaystack}
+              >
+                {isCreatingPayment || isInitializingPaystack
+                  ? "Processing..."
+                  : "Make Payment"}
               </Button>
             </form>
           </Form>

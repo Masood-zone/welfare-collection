@@ -121,7 +121,7 @@ type EnrollmentLists = Pick<
 type CreatePayment = Omit<
   Payments,
   "id" | "user" | "welfareProgram" | "paymentDate" | "receiptNumber"
->;
+> & { email: string };
 type UpdatePayment = Partial<Omit<Payments, "user" | "welfareProgram">>;
 type PaymentLists = Pick<
   Payments,
@@ -133,6 +133,20 @@ type PaymentLists = Pick<
   | "user"
   | "welfareProgram"
 >;
+type PaystackTransaction = {
+  reference: string;
+  trans: string;
+  status: string;
+  message: string;
+  transaction: string;
+  trxref: string;
+  redirecturl: string;
+};
+type PaymentData = {
+  id: string;
+  paystackreference: string;
+  amount: numbe;
+};
 
 interface PaymentTrack {
   id: string;
