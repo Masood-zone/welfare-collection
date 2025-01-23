@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "build": "tsc",
+    "build": "concurrently \"tsc\" \"pnpm prisma generate\" \"pnpm prisma migrate dev --name backend\"",
     "start": "node dist/server.js"
   },
   "keywords": [],
