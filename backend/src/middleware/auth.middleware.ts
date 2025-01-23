@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "9fb$3Kf&b9x!q3Nv2sTz5@vQ6mC*wX1h";
@@ -12,15 +12,17 @@ export const authenticateUser = (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
-): void => {
+): void | Response => {
   const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
-    res.status(401).json({ error: "Access token is missing or invalid" });
+    return res
+      .status(401)
+      .json({ error: "Access token is missing or invalid" });
   }
 
   try {
-    const payload = jwt.verify(token as string, JWT_SECRET) as unknown as {
+    const payload = jwt.verify(token, JWT_SECRET) as {
       id: string;
       role: string;
       exp: number;
@@ -28,13 +30,13 @@ export const authenticateUser = (
 
     // Check if token has expired
     if (Date.now() >= payload.exp * 1000) {
-      res.status(401).json({ error: "Token has expired" });
+      return res.status(401).json({ error: "Token has expired" });
     }
 
     req.user = payload; // Attach user data to the request object
     next();
   } catch (error) {
-    res.status(401).json({ error: "Invalid or expired token" });
+    return res.status(401).json({ error: "Invalid or expired token" });
   }
 };
 
@@ -43,8 +45,9 @@ export const authenticateAdmin = (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
-): void => {
-  authenticateUser(req, res, () => {
+): void | Response => {
+  return authenticateUser(req, res, (err) => {
+    if (err) return next(err);
     if (req.user?.role !== "ADMIN") {
       return res.status(403).json({ error: "Access denied: Admins only" });
     }
