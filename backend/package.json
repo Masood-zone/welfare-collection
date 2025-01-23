@@ -7,7 +7,7 @@
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "prisma:generate": "pnpm prisma generate",
     "prisma:migrate": "pnpm prisma migrate dev --name backend",
-    "build": "concurrently \"tsc\" \"pnpm prisma:generate\" \"pnpm prisma:migrate\"",
+    "build": "tsc && pnpm prisma:generate && pnpm prisma:migrate",
     "start": "node dist/server.js"
   },
   "keywords": [],
@@ -22,7 +22,6 @@
     "@types/node": "^22.10.7",
     "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
-    "concurrently": "^9.1.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
