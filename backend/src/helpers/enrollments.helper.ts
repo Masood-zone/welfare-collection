@@ -115,3 +115,26 @@ export const rejectEnrollmentHelper = async (id: string) => {
   });
   return result;
 };
+
+export const resubmitEnrollmentHelper = async (
+  id: string,
+  data: {
+    userId: string;
+    welfareProgramId: string;
+  }
+) => {
+  const enrollment = await prisma.enrollment.findUnique({ where: { id } });
+  if (!enrollment) {
+    throw new AppError("Enrollment not found", 404);
+  }
+
+  const result = await prisma.enrollment.update({
+    where: { id },
+    data: {
+      status: "PENDING",
+      userId: data.userId,
+      welfareProgramId: data.welfareProgramId,
+    },
+  });
+  return result;
+};

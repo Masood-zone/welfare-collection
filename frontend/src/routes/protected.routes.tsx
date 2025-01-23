@@ -1,7 +1,7 @@
 import { useUserStore } from "@/store/use-user.store";
 import { Navigate, Outlet } from "react-router-dom";
 
-export const ProtectedRoute = () => {
+export const AdminProtectedRoute = () => {
   const { user } = useUserStore();
   if (user?.role !== "ADMIN") {
     return <Navigate to="/" replace />;

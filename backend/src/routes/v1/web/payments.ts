@@ -6,6 +6,8 @@ import {
   updatePayment,
   deletePayment,
   getUserPayments,
+  updatePaymentByReference,
+  initializePaystackPayment,
 } from "../../../controllers/payments.controller";
 import {
   authenticateUser,
@@ -18,12 +20,25 @@ import {
 } from "../../../middleware/validations/payments.validations";
 
 const paymentRoutes = Router();
-
+// Make a cash payment
 paymentRoutes.post(
   "/",
   authenticateUser,
   validateRequest(createPaymentSchema),
   createPayment
+);
+// Initialize Paystack payment
+paymentRoutes.post(
+  "/initialize-paystack",
+  authenticateUser,
+  validateRequest(createPaymentSchema),
+  initializePaystackPayment
+);
+// Update a created payment based on reference
+paymentRoutes.patch(
+  "/:id/:reference",
+  authenticateUser,
+  updatePaymentByReference
 );
 paymentRoutes.get("/", authenticateAdmin, getAllPayments);
 paymentRoutes.get("/:id", authenticateUser, getPaymentById);

@@ -3,7 +3,9 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import {
   createUser,
+  deleteUserById,
   findUserByEmail,
+  findUserById,
   findUsersByRole,
   updateUser,
 } from "../helpers/user.helper";
@@ -126,6 +128,30 @@ export const loginUser = async (
   }
 };
 
+export const getUserInfo = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const userId = req.params.id;
+
+  try {
+    const user = await findUserById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const userWithoutPassword = { ...user, password: undefined };
+
+    res.json({
+      user: userWithoutPassword,
+    });
+  } catch (error) {
+    // res.status(500).json({ error: "Error fetching user", details: error });
+    next(new AppError("Error fetching user", 500));
+  }
+};
+
 export const updateUserData = async (
   req: any,
   res: Response,
@@ -160,5 +186,27 @@ export const updateUserData = async (
     //   .status(500)
     //   .json({ error: "Error updating user profile", details: error });
     next(new AppError("Error updating user profile", 500));
+  }
+};
+
+export const deleteUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const userId = req.params.id;
+
+  try {
+    const user = await findUserById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found!" });
+    }
+
+    await deleteUserById(userId);
+
+    res.json({ message: "User deleted successfully" });
+  } catch (error) {
+    // res.status(500).json({ error: "Error deleting user", details: error });
+    next(new AppError("Error deleting user", 500));
   }
 };

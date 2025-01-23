@@ -12,6 +12,8 @@ export const getAllAnalytics = async (
       recentPayments,
       totalRevenue,
       totalMembers,
+      totalEnrollments,
+      totalWelfares,
       monthlyPayments,
       weeklyPayments,
       dailyPayments,
@@ -23,6 +25,8 @@ export const getAllAnalytics = async (
       }),
       prisma.payment.aggregate({ _sum: { amount: true } }),
       prisma.user.count({ where: { role: "MEMBER" } }),
+      prisma.enrollment.count(),
+      prisma.welfareProgram.count(),
       prisma.$queryRaw`
         SELECT DATE_TRUNC('month', "paymentDate") as month, SUM(amount) as total
         FROM "Payment"
@@ -50,6 +54,8 @@ export const getAllAnalytics = async (
       recentPayments,
       totalRevenue: totalRevenue._sum.amount,
       totalMembers,
+      totalEnrollments,
+      totalWelfares,
       monthlyPayments,
       weeklyPayments,
       dailyPayments,

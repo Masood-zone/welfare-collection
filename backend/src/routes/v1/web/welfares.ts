@@ -5,6 +5,8 @@ import {
   getWelfareProgramById,
   updateWelfareProgram,
   deleteWelfareProgram,
+  getWelfareProgramTotals,
+  getWelfareProgramExpenses,
 } from "../../../controllers/welfares.controller";
 import {
   authenticateAdmin,
@@ -38,6 +40,16 @@ welfareProgramRoutes.patch(
   authenticateAdmin,
   validateRequest(updateWelfareProgramSchema),
   updateWelfareProgram
+);
+welfareProgramRoutes.get(
+  "/:id/totals",
+  authenticateAdmin,
+  getWelfareProgramTotals
+);
+welfareProgramRoutes.get(
+  "/:id/expenses",
+  authenticateAdmin,
+  getWelfareProgramExpenses
 );
 welfareProgramRoutes.delete("/:id", authenticateAdmin, deleteWelfareProgram);
 

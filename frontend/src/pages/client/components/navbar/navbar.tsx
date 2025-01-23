@@ -12,7 +12,14 @@ import {
 import { useUserStore } from "@/store/use-user.store";
 import { Link, useLocation } from "react-router-dom";
 import { Logo } from "@/assets";
-import { Cog, DoorOpen, MenuIcon, User, X } from "lucide-react";
+import {
+  Cog,
+  DoorOpen,
+  LayoutDashboard,
+  MenuIcon,
+  User,
+  X,
+} from "lucide-react";
 import { ModeToggle } from "@/components/ui/toggle-theme";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -75,7 +82,10 @@ export function Navbar() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56">
-                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuLabel className="space-x-1">
+                      <span>{user?.role === "ADMIN" ? "Admin" : "My"}</span>
+                      <span>Account</span>
+                    </DropdownMenuLabel>
                     <DropdownMenuItem className="lg:hidden">
                       <div className="flex flex-col space-y-1">
                         <span className="font-bold text-primary">
@@ -86,22 +96,41 @@ export function Navbar() {
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
-                      <DropdownMenuItem>
-                        <User />
-                        <Link to="/settings/accdount">Account</Link>
-                      </DropdownMenuItem>
-                      {/* <DropdownMenuItem>
-                        <Link to="/dashboard">Dashboard</Link>
-                      </DropdownMenuItem> */}
-                      <DropdownMenuItem>
-                        <Cog />
-                        <Link to="/settings">Settings</Link>
-                      </DropdownMenuItem>
+                      {user?.role === "ADMIN" ? (
+                        <>
+                          <DropdownMenuItem>
+                            <LayoutDashboard />
+                            <Link to="/admin">Dashboard</Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <User />
+                            <Link to="/admin/settings/account">Account</Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <Cog />
+                            <Link to="/admin/settings">Settings</Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleLogout()}>
+                            Log out
+                          </DropdownMenuItem>
+                        </>
+                      ) : (
+                        <>
+                          <DropdownMenuItem>
+                            <User />
+                            <Link to="/settings/account">Account</Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <Cog />
+                            <Link to="/settings">Settings</Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={() => handleLogout()}>
+                            Log out
+                          </DropdownMenuItem>
+                        </>
+                      )}
                     </DropdownMenuGroup>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => handleLogout()}>
-                      Log out
-                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>

@@ -5,6 +5,11 @@ export const createPayment = async (data: CreatePayment) => {
   return response.data;
 };
 
+export const initializePaystackPayment = async (data: CreatePayment) => {
+  const response = await api.post("/payments/initialize-paystack", data);
+  return response.data;
+};
+
 export const fetchMyPayments = async (userId: string) => {
   const response = await api.get(`/payments/user/${userId}`);
   return response.data?.payments;
@@ -12,6 +17,15 @@ export const fetchMyPayments = async (userId: string) => {
 
 export const updatePayment = async (data: UpdatePayment) => {
   const response = await api.patch(`/payments/${data.id}`, data);
+  return response.data;
+};
+
+export const updatePaymentStatus = async (
+  id: string,
+  reference: string,
+  data: { status: string }
+) => {
+  const response = await api.patch(`/payments/${id}/${reference}`, data);
   return response.data;
 };
 

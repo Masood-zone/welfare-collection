@@ -8,6 +8,7 @@ import {
   getEnrollmentByIdHelper,
   getEnrollmentsByUserIdHelper,
   rejectEnrollmentHelper,
+  resubmitEnrollmentHelper,
   updateEnrollmentHelper,
 } from "../helpers/enrollments.helper";
 
@@ -143,6 +144,28 @@ export const approveEnrollment = async (
     });
   } catch (error) {
     next(new AppError("Error approving enrollment", 500));
+  }
+};
+
+export const resubmitEnrollment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+  const { userId, welfareProgramId } = req.body;
+
+  try {
+    const updatedEnrollment = await resubmitEnrollmentHelper(id, {
+      userId,
+      welfareProgramId,
+    });
+    res.status(200).json({
+      message: "Enrollment resubmitted successfully",
+      enrollment: updatedEnrollment,
+    });
+  } catch (error) {
+    next(new AppError("Error resubmitting enrollment", 500));
   }
 };
 

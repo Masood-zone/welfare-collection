@@ -6,6 +6,8 @@ import {
   adminRegisterUser,
   getAllAdmins,
   getAllMembers,
+  getUserInfo,
+  deleteUser,
 } from "../../../controllers/users.controller";
 import {
   authenticateAdmin,
@@ -42,6 +44,23 @@ userRoutes.get("/admin/list", authenticateAdmin, async (req, res, next) => {
 userRoutes.get("/list", authenticateUser, async (req, res, next) => {
   try {
     await getAllMembers(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Get user info
+userRoutes.get("/:id", authenticateUser, async (req, res, next) => {
+  try {
+    await getUserInfo(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+// Delete user route
+userRoutes.delete("/:id", authenticateAdmin, async (req, res, next) => {
+  try {
+    await deleteUser(req, res, next);
   } catch (error) {
     next(error);
   }

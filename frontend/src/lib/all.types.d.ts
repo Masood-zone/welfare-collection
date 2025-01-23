@@ -23,7 +23,7 @@ interface WelfareProgram {
   description: string;
   amount: number;
   paymentCycle: "MONTHLY" | "DAILY" | "WEEKLY";
-  createdBy: string;
+  createdBy?: string;
   createByUser: Pick<User, "id" | "name" | "email" | "phoneNumber" | "role">;
   status?: string;
 }
@@ -81,6 +81,20 @@ interface AuthState {
   setUser: (user: User) => void;
   clearUser: () => void;
 }
+// Custom Button Props
+interface LoadingButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  isLoading?: boolean;
+  icon?: React.ReactNode;
+  children: React.ReactNode;
+  variant?:
+    | "secondary"
+    | "link"
+    | "default"
+    | "outline"
+    | "destructive"
+    | "ghost";
+}
 
 /*
  * User Types
@@ -88,6 +102,7 @@ interface AuthState {
 type RegisterUser = Omit<User, "id" | "role" | "token">;
 type LoginUser = Pick<User, "email" | "password">;
 type UpdateUser = Partial<Omit<User, "role">>;
+type UserLists = Pick<User, "id" | "name" | "email" | "phoneNumber" | "role">;
 
 /*
  * Enrollment Types
@@ -106,7 +121,7 @@ type EnrollmentLists = Pick<
 type CreatePayment = Omit<
   Payments,
   "id" | "user" | "welfareProgram" | "paymentDate" | "receiptNumber"
->;
+> & { email: string };
 type UpdatePayment = Partial<Omit<Payments, "user" | "welfareProgram">>;
 type PaymentLists = Pick<
   Payments,
@@ -118,6 +133,20 @@ type PaymentLists = Pick<
   | "user"
   | "welfareProgram"
 >;
+type PaystackTransaction = {
+  reference: string;
+  trans: string;
+  status: string;
+  message: string;
+  transaction: string;
+  trxref: string;
+  redirecturl: string;
+};
+type PaymentData = {
+  id: string;
+  paystackreference: string;
+  amount: numbe;
+};
 
 interface PaymentTrack {
   id: string;
@@ -137,20 +166,19 @@ interface PaymentTrack {
 /*
  * Welfare Program Types
  */
-type CreateWelfareProgram = Omit<
-  WelfareProgram,
-  "id" | "createdBy" | "createByUser"
+type CreateWelfareProgram = Omit<WelfareProgram, "createdByUser", "id">;
+type UpdateWelfareProgram = Partial<
+  Omit<WelfareProgram, "createdByUser", "id">
 >;
-type UpdateWelfareProgram = Partial<Omit<WelfareProgram, "createByUser">>;
 type WelfareProgramLists = Pick<
   WelfareProgram,
-  "id" | "name" | "description" | "amount" | "payemntCycle" | "createByUser"
+  "id" | "name" | "description" | "amount" | "paymentCycle" | "createdByUser"
 >;
 
 /*
  * Expenses Types
  */
-type CreateExpense = Omit<Expenses, "id" | "recordedBy" | "welfareProgram">;
+type CreateExpense = Omit<Expenses, "id" | "welfareProgram">;
 type UpdateExpense = Partial<Omit<Expenses, "recordedBy" | "welfareProgram">>;
 type ExpenseLists = Pick<
   Expenses,
@@ -181,4 +209,12 @@ type TrackPaymentLists = Pick<
 interface ErrorResponse {
   status: number;
   message: string;
+}
+
+// Admin header props
+interface HeaderProps {
+  title: string;
+  description: string;
+  className?: string;
+  buttons: ButtonInfo[];
 }

@@ -6,9 +6,11 @@ import {
 } from "./api";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { useUserStore } from "@/store/use-user.store";
 
 export const useCreateEnrollment = () => {
   const navigate = useNavigate();
+  const { user } = useUserStore();
   return useMutation({
     mutationFn: (data: CreateEnrollment) => createEnrollment(data),
     mutationKey: ["createEnrollment"],
@@ -17,7 +19,7 @@ export const useCreateEnrollment = () => {
         description: "You have successfully enrolled in the welfare program",
         duration: 5000,
       });
-      navigate("/");
+      navigate(`/user/${user?.id}/dashboard`);
     },
   });
 };

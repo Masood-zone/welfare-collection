@@ -24,7 +24,11 @@ export const useRegister = () => {
         description: "Welcome to the platform",
         duration: 5000,
       });
-      navigate("/");
+      if (user.role === "MEMBER") {
+        navigate(`/user/${user.id}/dashboard`);
+      } else {
+        navigate(`/`);
+      }
     },
     onError: (error: ErrorResponse) => {
       // Define error type later
@@ -55,7 +59,11 @@ export const useLoginUser = () => {
         description: "Welcome back",
         duration: 5000,
       });
-      navigate("/");
+      if (user.role === "MEMBER") {
+        navigate(`/user/${user.id}/dashboard`);
+      } else {
+        navigate(`/`);
+      }
     },
     onError: (error: ErrorResponse) => {
       toast.error(error.status, {

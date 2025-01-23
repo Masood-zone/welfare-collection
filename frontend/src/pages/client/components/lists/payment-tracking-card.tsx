@@ -65,9 +65,7 @@ export function PaymentTrackCard({
       </CardContent>
       <CardFooter>
         <Button asChild className="w-full">
-          <Link to={`/settings/track-payments/${paymentTrack.id}`}>
-            View Status
-          </Link>
+          <Link to={`${paymentTrack.id}`}>View Status</Link>
         </Button>
       </CardFooter>
     </Card>
