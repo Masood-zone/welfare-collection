@@ -8,13 +8,14 @@ import {
   createRoutesFromElements,
 } from "react-router-dom";
 import { AdminProtectedRoute, UserAccountProtected } from "./protected.routes";
+import UserLayout from "@/pages/client/user/user.layout";
 
 const rootRoutes = createBrowserRouter(
   createRoutesFromElements(
     <>
       {/* Root Layout */}
       <Route path="/" element={<RootLayout />}>
-        {/* Client Routes */}
+        {/* Home Routes */}
         <Route path="/" element={<ClientLayout />}>
           {/* Base routes */}
           <Route
@@ -44,131 +45,136 @@ const rootRoutes = createBrowserRouter(
               return { Component: ContactUs };
             }}
           />
-          {/* Apply for welfare */}
-          <Route
-            path="apply/:id"
-            lazy={async () => {
-              const { default: ApplyWelfare } = await import(
-                "@/pages/client/apply/welfare"
-              );
-              return { Component: ApplyWelfare };
-            }}
-          />
-          {/* Settings */}
-          <Route element={<UserAccountProtected />}>
+
+          {/* Not Found */}
+          <Route path="*" element={<NotFound />} />
+        </Route>
+        {/* User routes */}
+        <Route element={<UserAccountProtected />}>
+          <Route path="/user/:id" element={<UserLayout />}>
+            {/* User dashboard */}
             <Route
-              path="settings"
+              path="dashboard"
               lazy={async () => {
-                const { default: SettingsLayout } = await import(
-                  "@/pages/client/settings"
+                const { default: UserDashboard } = await import(
+                  "@/pages/client/user/[id]/dashboard/dashboard"
                 );
-                return { Component: SettingsLayout };
+                return { Component: UserDashboard };
+              }}
+            />
+            {/* Account */}
+            <Route
+              path="account"
+              lazy={async () => {
+                const { default: Account } = await import(
+                  "@/pages/client/user/[id]/account/account"
+                );
+                return { Component: Account };
+              }}
+            />
+            {/* Payments Layout*/}
+            <Route
+              path="payments"
+              lazy={async () => {
+                const { default: PaymentsLayout } = await import(
+                  "@/pages/client/user/[id]/payments/index"
+                );
+                return { Component: PaymentsLayout };
               }}
             >
-              {/* Settings */}
+              {/* Payments */}
               <Route
                 index
                 lazy={async () => {
-                  const { default: Settings } = await import(
-                    "@/pages/client/settings/settings"
+                  const { default: Payments } = await import(
+                    "@/pages/client/user/[id]/payments/payments"
                   );
-                  return { Component: Settings };
+                  return { Component: Payments };
                 }}
               />
-              {/* Account */}
+              {/* Make payment */}
               <Route
-                path="account"
+                path="make-payment"
                 lazy={async () => {
-                  const { default: Account } = await import(
-                    "@/pages/client/settings/account/account"
+                  const { default: MakePayment } = await import(
+                    "@/pages/client/user/[id]/payments/forms/make-payment"
                   );
-                  return { Component: Account };
+                  return { Component: MakePayment };
                 }}
               />
-              {/* Payments */}
-              <Route
-                path="payments"
-                lazy={async () => {
-                  const { default: PaymentsLayout } = await import(
-                    "@/pages/client/settings/payments/index"
-                  );
-                  return { Component: PaymentsLayout };
-                }}
-              >
-                {" "}
-                <Route
-                  index
-                  lazy={async () => {
-                    const { default: Payments } = await import(
-                      "@/pages/client/settings/payments/payments"
-                    );
-                    return { Component: Payments };
-                  }}
-                />
-                {/* Make payment */}
-                <Route
-                  path="make-payment"
-                  lazy={async () => {
-                    const { default: MakePayment } = await import(
-                      "@/pages/client/settings/payments/forms/make-payment"
-                    );
-                    return { Component: MakePayment };
-                  }}
-                />
-              </Route>
-              {/* Track payments */}
-              <Route
-                path="track-payments"
-                lazy={async () => {
-                  const { default: PaymentsTrackerLayout } = await import(
-                    "@/pages/client/settings/track-payments/index"
-                  );
-                  return { Component: PaymentsTrackerLayout };
-                }}
-              >
-                <Route
-                  index
-                  lazy={async () => {
-                    const { default: ViewPayments } = await import(
-                      "@/pages/client/settings/track-payments/view-payments"
-                    );
-                    return { Component: ViewPayments };
-                  }}
-                />
-                {/* Track a payment */}
-                <Route
-                  path=":id"
-                  lazy={async () => {
-                    const { default: TrackPayment } = await import(
-                      "@/pages/client/settings/track-payments/track-payment"
-                    );
-                    return { Component: TrackPayment };
-                  }}
-                />
-              </Route>
-              {/* Welfares */}
-              <Route
-                path="welfares"
-                lazy={async () => {
-                  const { default: Welfares } = await import(
-                    "@/pages/client/settings/welfares/welfares"
-                  );
-                  return { Component: Welfares };
-                }}
-              />
-              {/* Resubmit enrollment */}
-              <Route
-                path="resubmit/:id/:enrollmentId"
-                lazy={async () => {
-                  const { default: ResubmitEnrollment } = await import(
-                    "@/pages/client/re-submit/re-submit"
-                  );
-                  return { Component: ResubmitEnrollment };
-                }}
-              />
-              {/* Not Found */}
-              <Route path="*" element={<NotFound />} />
             </Route>
+            {/* Track payments layout*/}
+            <Route
+              path="track-payments"
+              lazy={async () => {
+                const { default: PaymentsTrackerLayout } = await import(
+                  "@/pages/client/user/[id]/track-payments/index"
+                );
+                return { Component: PaymentsTrackerLayout };
+              }}
+            >
+              <Route
+                index
+                lazy={async () => {
+                  const { default: ViewPayments } = await import(
+                    "@/pages/client/user/[id]/track-payments/view-payments"
+                  );
+                  return { Component: ViewPayments };
+                }}
+              />
+              {/* Track a payment */}
+              <Route
+                path=":id"
+                lazy={async () => {
+                  const { default: TrackPayment } = await import(
+                    "@/pages/client/user/[id]/track-payments/track-payment"
+                  );
+                  return { Component: TrackPayment };
+                }}
+              />
+            </Route>
+            {/* Welfares */}
+            <Route
+              path="welfares"
+              lazy={async () => {
+                const { default: Welfares } = await import(
+                  "@/pages/client/user/[id]/welfares/welfares"
+                );
+                return { Component: Welfares };
+              }}
+            />
+            {/* Resubmit enrollment */}
+            <Route
+              path="resubmit/:id/:enrollmentId"
+              lazy={async () => {
+                const { default: ResubmitEnrollment } = await import(
+                  "@/pages/client/user/[id]/re-submit/re-submit"
+                );
+                return { Component: ResubmitEnrollment };
+              }}
+            />
+            {/* Apply for welfare */}
+            <Route
+              path="apply/:id"
+              lazy={async () => {
+                const { default: ApplyWelfare } = await import(
+                  "@/pages/client/user/[id]/apply/welfare"
+                );
+                return { Component: ApplyWelfare };
+              }}
+            />
+            {/* User Settings */}
+            <Route
+              path="settings"
+              lazy={async () => {
+                const { default: Settings } = await import(
+                  "@/pages/client/user/[id]/settings/settings"
+                );
+                return { Component: Settings };
+              }}
+            />
+            {/* Not Found */}
+            <Route path="*" element={<NotFound />} />
           </Route>
           {/* Not Found */}
           <Route path="*" element={<NotFound />} />

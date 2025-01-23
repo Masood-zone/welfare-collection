@@ -21,7 +21,7 @@ export const useCreatePayment = () => {
       toast.success("Payment Recorded", {
         description: "Your cash payment has been recorded successfully.",
       });
-      navigate("/settings/payments");
+      navigate("-1");
     },
     onError: (error: ErrorResponse) => {
       toast.error(error.status, {

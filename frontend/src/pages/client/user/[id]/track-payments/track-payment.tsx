@@ -7,8 +7,8 @@ import { startOfWeek } from "date-fns/startOfWeek";
 import { getDay } from "date-fns/getDay";
 import { enUS } from "date-fns/locale/en-US";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Link, useParams } from "react-router-dom";
-import { useTrackPaymentDetails } from "../../services/payments/queries";
+import { useNavigate, useParams } from "react-router-dom";
+import { useTrackPaymentDetails } from "../../../services/payments/queries";
 
 const locales = {
   "en-US": enUS,
@@ -23,6 +23,7 @@ const localizer = dateFnsLocalizer({
 });
 
 export default function TrackPayment() {
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { data: paymentTrack, isLoading } = useTrackPaymentDetails(id ?? "");
   const [countdown, setCountdown] = useState("");
@@ -70,6 +71,9 @@ export default function TrackPayment() {
       allDay: true,
     },
   ];
+  const handleGoBack = () => {
+    navigate(-1);
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -77,11 +81,12 @@ export default function TrackPayment() {
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <h1>{paymentTrack.welfareProgram.name}</h1>
-            <Link to="/settings/track-payments">
-              <span className="text-sm text-primary hover:underline">
-                Go Back
-              </span>
-            </Link>
+            <span
+              onClick={() => handleGoBack()}
+              className="text-sm text-primary hover:underline cursor-pointer"
+            >
+              Go Back
+            </span>
           </CardTitle>
         </CardHeader>
         <CardContent>

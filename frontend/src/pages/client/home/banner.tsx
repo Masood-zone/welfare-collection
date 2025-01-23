@@ -26,7 +26,9 @@ export function Banner() {
                 {user?.role === "ADMIN" ? (
                   <Link to="/admin">Go to Admin Panel</Link>
                 ) : (
-                  <Link to="#welfare">Apply for Welfare</Link>
+                  <Link to={`/user/${user.id}/dashboard`}>
+                    Go to your Dashboard
+                  </Link>
                 )}
               </Button>
             ) : (

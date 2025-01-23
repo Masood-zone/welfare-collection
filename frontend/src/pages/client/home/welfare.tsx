@@ -43,7 +43,7 @@ function AnimatedWelfareCard({
 
 export default function Welfare() {
   const { user } = useUserStore();
-  const [activeTab, setActiveTab] = useState("available");
+  const [activeTab, setActiveTab] = useState("enrolled");
   const { data: allWelfarePrograms, isLoading: isLoadingAll } =
     useFetchAllWelfarePrograms();
   const { data: enrolledPrograms, isLoading: isLoadingEnrolled } =
@@ -67,12 +67,13 @@ export default function Welfare() {
   );
 
   return (
-    <section className="py-12 px-4 sm:px-6 lg:px-8">
+    <section className="py-12">
+      <h2 className="text-3xl font-bold mb-6">Welfare Programs</h2>
       <div className="max-w-7xl mx-auto">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="mb-6">
-            <TabsTrigger value="available">Available Programs</TabsTrigger>
             <TabsTrigger value="enrolled">Enrolled Programs</TabsTrigger>
+            <TabsTrigger value="available">Available Programs</TabsTrigger>
           </TabsList>
           {/* Available programs */}
           <TabsContent value="available">

@@ -15,7 +15,7 @@ import { useUserStore } from "@/store/use-user.store";
 import {
   useFetchAWelfareProgram,
   useResubmitEnrollment,
-} from "../services/welfare/queries";
+} from "@/pages/client/services/welfare/queries";
 
 export default function ResubmitEnrollment() {
   const { id, enrollmentId } = useParams<{
@@ -79,7 +79,7 @@ export default function ResubmitEnrollment() {
             Re-submit your enrollment for the welfare program below.
           </p>
         </div>
-        <Link to="/settings/welfares" className="text-primary underline">
+        <Link to="welfares" className="text-primary underline">
           Go Back
         </Link>
       </div>

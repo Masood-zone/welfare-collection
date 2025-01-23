@@ -1,7 +1,7 @@
 import { useUserStore } from "@/store/use-user.store";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useTrackMyPayments } from "../../services/payments/queries";
-import { PaymentTrackCard } from "../../components/lists/payment-tracking-card";
+import { useTrackMyPayments } from "../../../services/payments/queries";
+import { PaymentTrackCard } from "../../../components/lists/payment-tracking-card";
 
 export default function ViewPayments() {
   const { user } = useUserStore();

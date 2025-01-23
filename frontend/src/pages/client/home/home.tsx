@@ -1,5 +1,4 @@
 import { Banner } from "./banner";
-import Welfare from "./welfare";
 
 export default function Home() {
   return (
@@ -7,8 +6,7 @@ export default function Home() {
       <main>
         {/* Banner */}
         <Banner />
-        {/* Welfare Programs */}
-        <Welfare />
+        {/* Services */}
       </main>
     </div>
   );

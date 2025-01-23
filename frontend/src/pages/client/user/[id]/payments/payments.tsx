@@ -1,9 +1,9 @@
 import { useUserStore } from "@/store/use-user.store";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useFetchMyPayments } from "../../services/payments/queries";
+import { useFetchMyPayments } from "../../../services/payments/queries";
 import { Link } from "react-router-dom";
-import { PaymentCard } from "../../components/lists/payment-card";
+import { PaymentCard } from "../../../components/lists/payment-card";
 
 export default function Payments() {
   const { user } = useUserStore();

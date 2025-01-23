@@ -16,7 +16,7 @@ import {
   useInitializePaystackPayment,
   useUpdatePaymentStatus,
 } from "@/pages/client/services/payments/queries";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useFetchUserEnrolledWelfarePrograms } from "@/pages/client/services/welfare/queries";
 import PaystackPop from "@paystack/inline-js";
 import {
@@ -29,8 +29,8 @@ import { formSchema } from "./form-schema";
 const paystackPublicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
 
 export default function MakePayment() {
-  const { user } = useUserStore();
   const navigate = useNavigate();
+  const { user } = useUserStore();
   const { mutateAsync: createPayment, isPending: isCreatingPayment } =
     useCreatePayment();
   const {
@@ -64,11 +64,10 @@ export default function MakePayment() {
         } catch (error) {
           console.error("Error updating payment status:", error);
         } finally {
-          navigate("/settings/payments");
+          navigate("-1");
         }
       },
       onCancel: () => {
-        console.log("Payment canceled");
         toast.error("Payment canceled", {
           description: "You have canceled the payment process.",
         });
@@ -96,18 +95,22 @@ export default function MakePayment() {
     }
   }
 
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <Card>
         <CardHeader>
           <CardTitle className="flex justify-between items-center">
             <h1>Make a Payment</h1>
-            <Link
-              to="/settings/payments"
-              className="text-sm text-primary hover:text-primary-foreground"
+            <span
+              onClick={() => handleGoBack()}
+              className="text-sm text-primary hover:underline cursor-pointer"
             >
               Go Back
-            </Link>
+            </span>
           </CardTitle>
           <CardDescription>
             Fill in the form below to make a payment.

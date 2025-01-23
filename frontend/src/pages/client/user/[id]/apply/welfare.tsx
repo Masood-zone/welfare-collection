@@ -11,9 +11,9 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link, useParams } from "react-router-dom";
-import { useFetchAWelfareProgram } from "../services/welfare/queries";
 import { useUserStore } from "@/store/use-user.store";
-import { useCreateEnrollment } from "../services/enrollment/queries";
+import { useFetchAWelfareProgram } from "@/pages/client/services/welfare/queries";
+import { useCreateEnrollment } from "@/pages/admin/services/enrollments/queries";
 
 export default function ApplyWelfare() {
   const { id } = useParams<{ id: string }>();
@@ -67,7 +67,7 @@ export default function ApplyWelfare() {
             Enroll in the welfare program below to get started.
           </p>
         </div>
-        <Link to="/" className="text-primary underline">
+        <Link to="dashboard" className="text-primary underline">
           Go Back
         </Link>
       </div>

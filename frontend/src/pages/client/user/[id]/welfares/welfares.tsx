@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useUserStore } from "@/store/use-user.store";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useFetchUserEnrolledWelfarePrograms } from "../../services/welfare/queries";
-import { UserWelfaresCard } from "../../components/lists/user-welfares-card";
+import { useFetchUserEnrolledWelfarePrograms } from "../../../services/welfare/queries";
+import { UserWelfaresCard } from "../../../components/lists/user-welfares-card";
 
 export default function Welfares() {
   const { user } = useUserStore();

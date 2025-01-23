@@ -1,4 +1,4 @@
-import { Banknote, HandCoins, NotebookPen, User } from "lucide-react";
+import { Banknote, HandCoins, NotebookPen } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   Card,
@@ -6,45 +6,47 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import { useUserStore } from "@/store/use-user.store";
+import Welfare from "@/pages/client/home/welfare";
 
-export default function Settings() {
+export default function UserDashboard() {
+  const { user } = useUserStore();
   const sidebarItems = [
     {
-      title: "Account",
-      href: "/settings/account",
-      icon: User,
-      description: "Manage your account details.",
-    },
-    {
       title: "Payments",
-      href: "/settings/payments",
+      href: "payments",
       icon: HandCoins,
       description: "Manage your payments.",
     },
     {
       title: "Track Payments",
-      href: "/settings/track-payments",
+      href: "track-payments",
       icon: Banknote,
       description: "Track your payments.",
     },
+
     {
       title: "Welfares",
-      href: "/settings/welfares",
+      href: "welfares",
       icon: NotebookPen,
       description: "Manage your welfares.",
     },
   ];
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
+      <div className="py-1 md:py-3">
+        <h1 className="text-3xl font-bold tracking-tight">
+          Welcome, {user?.name}! 🎉
+        </h1>
         <p className="text-muted-foreground">
-          Manage your account settings and preferences.
+          Manage your account details, payments, track payments, and welfares
+          here.
         </p>
       </div>
+      {/* Pages */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {sidebarItems.map((item) => (
-          <Link key={item.href} to={item.href}>
+          <Link key={item.href} to={`/user/${user?.id}/${item.href}`}>
             <Card className="h-full hover:bg-accent/20 transition-colors">
               <CardHeader>
                 <div className="flex items-center gap-2">
@@ -61,6 +63,8 @@ export default function Settings() {
           </Link>
         ))}
       </div>
+      {/* Welfare Programs */}
+      <Welfare />
     </div>
   );
 }
