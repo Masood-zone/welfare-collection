@@ -7,7 +7,7 @@
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "prisma:generate": "pnpm prisma generate",
     "prisma:migrate": "pnpm prisma migrate dev --name backend",
-    "build": "concurrently \"pnpm prisma:generate\" \"pnpm prisma:migrate\"",
+    "build": "concurrently \"tsc\" \"pnpm prisma:generate\" \"pnpm prisma:migrate\"",
     "start": "node dist/server.js"
   },
   "keywords": [],
