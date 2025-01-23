@@ -7,6 +7,7 @@ import {
 } from "./api";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { useUserStore } from "@/store/use-user.store";
 
 export const useFetchAllWelfarePrograms = () => {
   return useQuery({
@@ -30,6 +31,7 @@ export const useFetchAWelfareProgram = (id: string) => {
 
 export const useResubmitEnrollment = () => {
   const navigate = useNavigate();
+  const { user } = useUserStore();
   return useMutation({
     mutationFn: async (data: {
       id: string;
@@ -44,7 +46,7 @@ export const useResubmitEnrollment = () => {
         description:
           "Your enrollment has been resubmitted, you will be notified of the status soon.",
       });
-      navigate("/settings/welfares");
+      navigate(`/user/${user?.id}/welfares`);
     },
     onError: () => {
       toast.error("Failed to resubmit enrollment", {

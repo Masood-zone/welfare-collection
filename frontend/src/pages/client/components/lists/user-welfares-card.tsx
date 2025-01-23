@@ -8,6 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { CalendarIcon, DollarSign } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useUserStore } from "@/store/use-user.store";
 
 interface WelfareCardProps {
   welfare: {
@@ -18,6 +19,7 @@ interface WelfareCardProps {
 }
 
 export function UserWelfaresCard({ welfare }: WelfareCardProps) {
+  const { user } = useUserStore();
   const { status, welfareProgram } = welfare;
 
   return (
@@ -59,7 +61,9 @@ export function UserWelfaresCard({ welfare }: WelfareCardProps) {
         )}
         {status === "REJECTED" && (
           <Button asChild className="w-full">
-            <Link to={`/settings/resubmit/${welfareProgram.id}/${welfare.id}`}>
+            <Link
+              to={`/user/${user?.id}/resubmit/${welfareProgram.id}/${welfare.id}`}
+            >
               Re-submit
             </Link>
           </Button>

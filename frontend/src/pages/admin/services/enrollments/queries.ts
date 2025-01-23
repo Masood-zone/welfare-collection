@@ -10,6 +10,7 @@ import {
 } from "./api";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useUserStore } from "@/store/use-user.store";
 
 export const useFetchAllEnrollments = () => {
   return useQuery({
@@ -66,11 +67,12 @@ export const useRejectEnrollment = () => {
 
 export const useCreateEnrollment = () => {
   const navigate = useNavigate();
+  const { user } = useUserStore();
   return useMutation({
     mutationFn: (data: CreateEnrollment) => createEnrollment(data),
     onSuccess: () => {
       toast.success("Enrollment created successfully");
-      navigate("/admin/enrollments");
+      navigate(`/user/${user?.id}/dashboard`);
     },
     onError: (error) => {
       toast.error("Error creating enrollment", {

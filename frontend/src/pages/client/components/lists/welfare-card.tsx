@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { CalendarIcon } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useUserStore } from "@/store/use-user.store";
 
 export function WelfareCard({
   program,
@@ -19,6 +20,7 @@ export function WelfareCard({
   status?: string;
   isEnrolled?: boolean;
 }) {
+  const { user } = useUserStore();
   return (
     <Card className="w-full">
       <CardHeader>
@@ -66,7 +68,7 @@ export function WelfareCard({
           </Button>
         ) : (
           <Button asChild className="w-full">
-            <Link to={`/apply/${program.id}`}>Enroll Now</Link>
+            <Link to={`/user/${user?.id}/apply/${program.id}`}>Enroll Now</Link>
           </Button>
         )}
       </CardFooter>

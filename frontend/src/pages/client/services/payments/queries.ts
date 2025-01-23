@@ -11,9 +11,11 @@ import {
 } from "./api";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { useUserStore } from "@/store/use-user.store";
 
 export const useCreatePayment = () => {
   const navigate = useNavigate();
+  const { user } = useUserStore();
   return useMutation({
     mutationFn: (data: CreatePayment) => createPayment(data),
     mutationKey: ["createPayment"],
@@ -21,7 +23,7 @@ export const useCreatePayment = () => {
       toast.success("Payment Recorded", {
         description: "Your cash payment has been recorded successfully.",
       });
-      navigate("-1");
+      navigate(`/user/${user?.id}/payments`);
     },
     onError: (error: ErrorResponse) => {
       toast.error(error.status, {

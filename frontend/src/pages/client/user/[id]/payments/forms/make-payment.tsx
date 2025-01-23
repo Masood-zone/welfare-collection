@@ -64,7 +64,7 @@ export default function MakePayment() {
         } catch (error) {
           console.error("Error updating payment status:", error);
         } finally {
-          navigate("-1");
+          navigate(`/user/${user?.id}/payments`);
         }
       },
       onCancel: () => {
