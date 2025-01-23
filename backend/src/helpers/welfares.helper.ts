@@ -76,11 +76,21 @@ export const getWelfareProgramTotalsHelper = async (
   }
 
   const totalPayments = welfareProgram.payments.reduce(
-    (sum, payment) => sum + payment.amount.toNumber(),
+    (
+      sum: number,
+      payment: {
+        amount: any;
+      }
+    ) => sum + payment.amount.toNumber(),
     0
   );
   const totalExpenses = welfareProgram.expenses.reduce(
-    (sum, expense) => sum + expense.amount.toNumber(),
+    (
+      sum: number,
+      expense: {
+        amount: any;
+      }
+    ) => sum + expense.amount.toNumber(),
     0
   );
   const balance = totalPayments - totalExpenses;

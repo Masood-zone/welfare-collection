@@ -10,6 +10,7 @@ import {
   updatePaymentByReferenceHelper,
   updatePaymentHelper,
 } from "../helpers/payments.helper";
+import { PaymentStatus } from "../interfaces/all.interfaces";
 
 export const createPayment = async (
   req: Request,
@@ -27,7 +28,7 @@ export const createPayment = async (
       paymentMode,
       reference: "", // No Paystack reference for cash payments
       access_code: "", // No access code for cash payments
-      status: "PAID", // Cash payments are considered paid immediately
+      status: "PAID" as unknown as PaymentStatus, // Cash payments are considered paid immediately
     });
     res
       .status(201)
@@ -63,7 +64,7 @@ export const initializePaystackPayment = async (
       paymentMode,
       reference: paystackResponse.reference,
       access_code: paystackResponse.access_code,
-      status: "UNPAID",
+      status: "UNPAID" as unknown as PaymentStatus,
     });
     res
       .status(201)

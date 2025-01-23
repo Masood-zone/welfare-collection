@@ -1,5 +1,5 @@
-import { PaymentMode, PaymentStatus } from "@prisma/client";
 import prisma from "../config/db";
+import { PaymentMode, PaymentStatus } from "../interfaces/all.interfaces";
 import generateUniqueReceiptNumber from "../utils/generateRecieptNumber";
 import axios from "axios";
 

@@ -44,7 +44,7 @@ export const getAllAdmins = async (
 ) => {
   try {
     const admins = await findUsersByRole("ADMIN");
-    const adminsWithoutPassword = admins.map((admin) => {
+    const adminsWithoutPassword = admins.map((admin: { password: string }) => {
       return { ...admin, password: undefined };
     });
     res.status(200).json({ admins: adminsWithoutPassword });
@@ -61,9 +61,11 @@ export const getAllMembers = async (
 ) => {
   try {
     const members = await findUsersByRole("MEMBER");
-    const membersWithoutPassword = members.map((member) => {
-      return { ...member, password: undefined };
-    });
+    const membersWithoutPassword = members.map(
+      (member: { password: string }) => {
+        return { ...member, password: undefined };
+      }
+    );
     res.json({
       members: membersWithoutPassword,
     });

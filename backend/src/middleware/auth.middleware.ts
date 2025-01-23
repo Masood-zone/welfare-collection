@@ -12,13 +12,12 @@ export const authenticateUser = (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
-): void | Response => {
+): void => {
   const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
-    return res
-      .status(401)
-      .json({ error: "Access token is missing or invalid" });
+    res.status(401).json({ error: "Access token is missing or invalid" });
+    return;
   }
 
   try {
@@ -30,13 +29,14 @@ export const authenticateUser = (
 
     // Check if token has expired
     if (Date.now() >= payload.exp * 1000) {
-      return res.status(401).json({ error: "Token has expired" });
+      res.status(401).json({ error: "Token has expired" });
+      return;
     }
 
     req.user = payload; // Attach user data to the request object
     next();
   } catch (error) {
-    return res.status(401).json({ error: "Invalid or expired token" });
+    res.status(401).json({ error: "Invalid or expired token" });
   }
 };
 
@@ -45,11 +45,15 @@ export const authenticateAdmin = (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
-): void | Response => {
-  return authenticateUser(req, res, (err) => {
-    if (err) return next(err);
+): void => {
+  authenticateUser(req, res, (err) => {
+    if (err) {
+      next(err);
+      return;
+    }
     if (req.user?.role !== "ADMIN") {
-      return res.status(403).json({ error: "Access denied: Admins only" });
+      res.status(403).json({ error: "Access denied: Admins only" });
+      return;
     }
     next();
   });
