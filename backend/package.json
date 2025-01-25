@@ -5,10 +5,11 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "prisma:generate": "pnpm prisma generate",
-    "prisma:migrate": "pnpm prisma migrate dev --name backend",
-    "build": "tsc && pnpm prisma:generate && pnpm prisma:migrate",
-    "start": "node dist/server.js"
+    "build": "tsc",
+    "postbuild": "prisma generate",
+    "start": "prisma migrate deploy && node dist/server.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate deploy"
   },
   "keywords": [],
   "author": "",
