@@ -29,7 +29,13 @@ export const adminRegisterUser = async (
       phoneNumber,
       role: "ADMIN",
     });
-    res.status(200).json({ message: "Admin registered successfully", user });
+    const adminWithoutPassword = { ...user, password: undefined };
+    res.status(200).json({
+      message: "Admin registered successfully",
+      user: {
+        ...adminWithoutPassword,
+      },
+    });
   } catch (error) {
     // res.status(500).json({ error: "Error registering admin", details: error });
     next(new AppError("Error registering admin", 500));
@@ -84,8 +90,29 @@ export const registerUser = async (
   const { name, email, password, phoneNumber } = req.body;
 
   try {
-    const user = await createUser({ name, email, password, phoneNumber });
-    res.status(201).json({ message: "User registered successfully", user });
+    // Check if user already exists
+    const existingUser = await findUserByEmail(email);
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    // Create new user
+    const newUser = await createUser({ name, email, password, phoneNumber });
+
+    // Generate token
+    const expiresIn = "1d"; // Token expires in 1 day
+    const token = jwt.sign({ id: newUser.id, role: newUser.role }, JWT_SECRET, {
+      expiresIn,
+    });
+
+    res.status(201).json({
+      message: "User registered successfully",
+      user: {
+        ...newUser,
+        password: undefined,
+        token,
+      },
+    });
   } catch (error) {
     // res.status(500).json({ error: "Error registering user", details: error });
     next(new AppError(`Error registering user ${error}`, 500));

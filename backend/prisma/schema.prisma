@@ -30,7 +30,7 @@ model WelfareProgram {
   createdBy     String      // Admin who created the program
   createdByUser User       @relation(fields: [createdBy], references: [id],onDelete: Cascade)
   createdAt     DateTime    @default(now())
- enrollments    Enrollment[]     
+  enrollments    Enrollment[]     
   payments       Payment[]        
   paymentTrackers PaymentTracker[] 
   expenses       Expense[]        
@@ -73,6 +73,8 @@ model PaymentTracker {
   paymentStatus   PaymentStatus
   paymentId       String
   payment         Payment   @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  remainingAmount Decimal   @default(0)
+  prepaidAmount   Decimal   @default(0)
 }
 
 model Expense {
@@ -129,3 +131,4 @@ enum PaymentStatus {
   UNPAID
   PREPAID
 }
+

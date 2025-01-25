@@ -28,11 +28,18 @@ export const createPayment = async (
       paymentMode,
       reference: "", // No Paystack reference for cash payments
       access_code: "", // No access code for cash payments
-      status: "PAID" as unknown as PaymentStatus, // Cash payments are considered paid immediately
+      status: "PAID", // Cash payments are considered paid immediately
     });
     res
       .status(201)
-      .json({ message: "Cash payment created successfully", payment });
+      .json({
+        message: "Cash payment created successfully",
+        payment,
+        cycleStart: payment.cycleStart,
+        cycleEnd: payment.cycleEnd,
+        remainingAmount: payment.remainingAmount,
+        prepaidAmount: payment.prepaidAmount,
+      });
   } catch (error) {
     next(new AppError("Error creating cash payment", 500));
   }
@@ -64,7 +71,7 @@ export const initializePaystackPayment = async (
       paymentMode,
       reference: paystackResponse.reference,
       access_code: paystackResponse.access_code,
-      status: "UNPAID" as unknown as PaymentStatus,
+      status: "UNPAID",
     });
     res
       .status(201)

@@ -25,7 +25,13 @@ userRoutes.post("/admin/register", async (req, res, next) => {
   }
 });
 // User Routes
-userRoutes.post("/register", registerUser);
+userRoutes.post("/register", async (req, res, next) => {
+  try {
+    await registerUser(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
 userRoutes.post("/login", async (req, res, next) => {
   try {
     await loginUser(req, res, next);

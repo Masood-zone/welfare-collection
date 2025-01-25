@@ -17,6 +17,7 @@ import {
 import { Control } from "react-hook-form";
 import { z } from "zod";
 import { formSchema } from "./form-schema";
+import { InfoTooltip } from "@/components/shared/tooltip/tooltip";
 
 export const WelfareProgramSelect = ({
   control,
@@ -43,18 +44,25 @@ export const WelfareProgramSelect = ({
             {isLoading ? (
               <SelectItem value="loading">Loading...</SelectItem>
             ) : (
-              welfarePrograms?.map((program: Enrollments) => (
-                <SelectItem
-                  key={program.welfareProgramId}
-                  value={program.welfareProgramId}
-                >
-                  {program.welfareProgram.name}
-                </SelectItem>
-              ))
+              welfarePrograms
+                ?.filter(
+                  (program: Enrollments) => program.status === "APPROVED"
+                )
+                ?.map((program: Enrollments) => (
+                  <SelectItem
+                    key={program.welfareProgramId}
+                    value={program.welfareProgramId}
+                  >
+                    {program.welfareProgram.name}
+                  </SelectItem>
+                ))
             )}
           </SelectContent>
         </Select>
-        <FormDescription>Select a welfare program</FormDescription>
+        <FormDescription>
+          This shows the welfare programs which have been approved.
+          <InfoTooltip description="Select a welfare program" />
+        </FormDescription>
         <FormMessage />
       </FormItem>
     )}

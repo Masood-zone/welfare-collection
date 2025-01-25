@@ -77,9 +77,9 @@ export const createPaymentHelper = async (data: {
   userId: string;
   welfareProgramId: string;
   amount: number;
-  paymentMode: PaymentMode;
+  paymentMode: "CASH" | "CARD" | "MOMO";
   reference: string;
-  status: PaymentStatus;
+  status: "UNPAID" | "PAID" | "PREPAID";
   access_code: string;
 }) => {
   // Generate a unique receipt number
@@ -88,7 +88,7 @@ export const createPaymentHelper = async (data: {
   // Fetch welfare program details to determine payment cycle
   const welfareProgram = await prisma.welfareProgram.findUnique({
     where: { id: data.welfareProgramId },
-    select: { paymentCycle: true },
+    select: { paymentCycle: true, amount: true },
   });
 
   if (!welfareProgram) {
@@ -99,6 +99,9 @@ export const createPaymentHelper = async (data: {
   const now = new Date();
   let cycleStart = now;
   let cycleEnd = new Date();
+  let expectedAmount: number = welfareProgram.amount.toNumber();
+  let remainingAmount = 0;
+  let prepaidAmount = 0;
 
   switch (welfareProgram.paymentCycle) {
     case "DAILY":
@@ -109,7 +112,22 @@ export const createPaymentHelper = async (data: {
       break;
     case "MONTHLY":
       cycleEnd.setMonth(cycleEnd.getMonth() + 1);
+      expectedAmount *= 30;
       break;
+  }
+
+  // Extend or decrease cycleEnd based on the amount paid
+  if (data.amount < expectedAmount) {
+    remainingAmount = expectedAmount - data.amount;
+    cycleEnd = new Date(
+      cycleStart.getTime() +
+        (data.amount / expectedAmount) *
+          (cycleEnd.getTime() - cycleStart.getTime())
+    );
+  } else if (data.amount > expectedAmount) {
+    prepaidAmount = data.amount - expectedAmount;
+    const extraDays = prepaidAmount / welfareProgram.amount.toNumber();
+    cycleEnd.setDate(cycleEnd.getDate() + Math.floor(extraDays));
   }
 
   // Create payment
@@ -135,10 +153,12 @@ export const createPaymentHelper = async (data: {
       cycleEnd,
       paymentStatus: data.status,
       paymentId: payment.id,
+      remainingAmount,
+      prepaidAmount,
     },
   });
 
-  return payment;
+  return { payment, cycleStart, cycleEnd, remainingAmount, prepaidAmount };
 };
 
 export const getAllPaymentsHelper = async () => {
@@ -171,7 +191,7 @@ export const updatePaymentHelper = async (
     userId?: string;
     welfareProgramId?: string;
     amount?: number;
-    paymentMode?: PaymentMode;
+    paymentMode: "CASH" | "CARD" | "MOMO";
   }
 ) => {
   return await prisma.payment.update({
@@ -187,7 +207,7 @@ export const deletePaymentHelper = async (id: string) => {
 export const updatePaymentByReferenceHelper = async (
   id: string,
   reference: string,
-  status: PaymentStatus
+  status: "UNPAID" | "PAID" | "PREPAID"
 ) => {
   return await prisma.payment.update({
     where: { id, paystackreference: reference },

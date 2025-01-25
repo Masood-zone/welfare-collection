@@ -22,7 +22,7 @@ export const createWelfareProgram = async (
     const welfareProgram = await createWelfareProgramHelper({
       name,
       description,
-      amount: parseFloat(amount),
+      amount: Number.parseFloat(amount),
       paymentCycle,
       createdBy,
     });
@@ -30,6 +30,8 @@ export const createWelfareProgram = async (
     res.status(201).json({
       message: "Welfare program created successfully",
       welfareProgram,
+      dailyAmount: welfareProgram.amount,
+      originalAmount: amount,
     });
   } catch (error) {
     next(new AppError("Error creating welfare program", 500));

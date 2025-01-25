@@ -118,11 +118,13 @@ export function Navbar() {
                         <>
                           <DropdownMenuItem>
                             <User />
-                            <Link to="/settings/account">Account</Link>
+                            <Link to={`/user/${user.id}/account`}>Account</Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem>
                             <Cog />
-                            <Link to="/settings">Settings</Link>
+                            <Link to={`/user/${user.id}/settings`}>
+                              Settings
+                            </Link>
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem onClick={() => handleLogout()}>

@@ -7,11 +7,20 @@ export const createWelfareProgramHelper = async (data: {
   paymentCycle: "MONTHLY" | "DAILY" | "WEEKLY";
   createdBy: string;
 }) => {
+  const { amount, paymentCycle } = data;
+  let dailyAmount = amount;
+
+  if (paymentCycle === "MONTHLY") {
+    dailyAmount = amount / 30; // Based on 30 days in a month
+  } else if (paymentCycle === "WEEKLY") {
+    dailyAmount = amount / 7;
+  }
+
   return await prisma.welfareProgram.create({
     data: {
       name: data.name,
       description: data.description,
-      amount: data.amount,
+      amount: dailyAmount,
       paymentCycle: data.paymentCycle,
       createdBy: data.createdBy,
     },

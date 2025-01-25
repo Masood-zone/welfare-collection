@@ -3,7 +3,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
 import {
   Card,
   CardContent,
@@ -26,11 +32,15 @@ import {
 } from "./payment-form-components";
 import { toast } from "sonner";
 import { formSchema } from "./form-schema";
+import { useEffect, useState } from "react";
 const paystackPublicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
 
 export default function MakePayment() {
   const navigate = useNavigate();
   const { user } = useUserStore();
+  const [selectedProgramAmount, setSelectedProgramAmount] = useState<
+    string | null
+  >(null);
   const { mutateAsync: createPayment, isPending: isCreatingPayment } =
     useCreatePayment();
   const {
@@ -45,6 +55,26 @@ export default function MakePayment() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+
+  const approvedWelfarePrograms = welfarePrograms?.filter(
+    (program: Enrollments) => program.status === "APPROVED"
+  );
+
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name === "welfareProgramId") {
+        const selectedProgram = approvedWelfarePrograms.find(
+          (program: Enrollments) =>
+            program.welfareProgram.id === value.welfareProgramId
+        );
+        setSelectedProgramAmount(
+          selectedProgram?.welfareProgram.amount || null
+        );
+        form.setValue("amount", selectedProgram?.welfareProgram.amount || "");
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form, approvedWelfarePrograms]);
 
   const handlePaystackPayment = async (paymentData: PaymentData) => {
     const popup = new PaystackPop();
@@ -128,6 +158,20 @@ export default function MakePayment() {
                   />
                 </div>
               </div>
+              {selectedProgramAmount && (
+                <FormItem>
+                  <FormLabel>Program Amount</FormLabel>
+                  <FormControl>
+                    <div className="p-2 rounded-md bg-muted w-28 text-primary">
+                      GHS {selectedProgramAmount}
+                    </div>
+                  </FormControl>
+                  <FormDescription>
+                    This is the amount you are expected to pay for the selected
+                    welfare program.
+                  </FormDescription>
+                </FormItem>
+              )}
               <PaymentModeSelect control={form.control} />
               <AmountInput control={form.control} />
               <Button

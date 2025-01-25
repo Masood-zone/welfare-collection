@@ -21,8 +21,12 @@ import { InfoTooltip } from "@/components/shared/tooltip/tooltip";
 import { Link } from "react-router-dom";
 
 export function NavUser() {
-  const { user } = useUserStore();
+  const { user, clearUser } = useUserStore();
   const { isMobile } = useSidebar();
+
+  const handleLogout = () => {
+    clearUser();
+  };
 
   return (
     <SidebarMenu>
@@ -98,7 +102,7 @@ export function NavUser() {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleLogout()}>
               <LogOut />
               Log out
             </DropdownMenuItem>
