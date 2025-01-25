@@ -39,13 +39,13 @@ export const data = {
       icon: Wallet,
       items: [
         {
+          title: "Payments",
+          url: "/admin/payments",
+        },
+        {
           title: "Expenses",
           url: "/admin/expenses",
         },
-        // {
-        //   title: "Accounting",
-        //   url: "/admin/accounting",
-        // },
       ],
     },
     {

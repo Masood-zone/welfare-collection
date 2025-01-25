@@ -16,7 +16,7 @@ import { Loader2 } from "lucide-react";
 interface EditPaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  remainingAmount: string;
+  remainingAmount: string | number;
   paymentId: string;
 }
 
@@ -40,11 +40,11 @@ export function EditPaymentModal({
     userId || ""
   );
 
-  const handleEditSubmit = async (values: { amount: string }) => {
+  const handleEditSubmit = async (values: { amount: string | number }) => {
     try {
       await updatePayment({
         id: paymentId,
-        amount: Number.parseFloat(values.amount),
+        amount: Number.parseFloat(values.amount.toString()),
       });
     } catch (error) {
       console.log(error);

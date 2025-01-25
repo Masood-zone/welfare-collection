@@ -364,6 +364,53 @@ const rootRoutes = createBrowserRouter(
                 }}
               />
             </Route>
+            {/* Payments */}
+            <Route
+              path="payments"
+              lazy={async () => {
+                const { default: AdminPaymentsLayout } = await import(
+                  "@/pages/admin/pages/payments"
+                );
+                return { Component: AdminPaymentsLayout };
+              }}
+            >
+              <Route
+                index
+                lazy={async () => {
+                  const { default: AdminPayments } = await import(
+                    "@/pages/admin/pages/payments/payments"
+                  );
+                  return { Component: AdminPayments };
+                }}
+              />
+              <Route
+                path="add"
+                lazy={async () => {
+                  const { default: AddPayment } = await import(
+                    "@/pages/admin/pages/payments/add/add-payment"
+                  );
+                  return { Component: AddPayment };
+                }}
+              />
+              <Route
+                path=":welfareId"
+                lazy={async () => {
+                  const { default: WelfarePayments } = await import(
+                    "@/pages/admin/pages/payments/view/welfare-payments"
+                  );
+                  return { Component: WelfarePayments };
+                }}
+              />
+              <Route
+                path="edit/:id"
+                lazy={async () => {
+                  const { default: EditPayment } = await import(
+                    "@/pages/admin/pages/payments/edit/edit-payment"
+                  );
+                  return { Component: EditPayment };
+                }}
+              />
+            </Route>
             {/* Expenses */}
             <Route
               path="expenses"

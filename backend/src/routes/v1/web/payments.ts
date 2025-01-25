@@ -9,6 +9,7 @@ import {
   updatePaymentByReference,
   initializePaystackPayment,
   updatePaymentAmount,
+  getWelfarePayments,
 } from "../../../controllers/payments.controller";
 import {
   authenticateUser,
@@ -43,6 +44,7 @@ paymentRoutes.patch(
 );
 paymentRoutes.get("/", authenticateAdmin, getAllPayments);
 paymentRoutes.get("/:id", authenticateUser, getPaymentById);
+paymentRoutes.get("/welfare/:welfareId", authenticateAdmin, getWelfarePayments);
 // Get User payments
 paymentRoutes.get("/user/:id", authenticateUser, getUserPayments);
 paymentRoutes.patch(

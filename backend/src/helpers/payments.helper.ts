@@ -166,6 +166,31 @@ export const getAllPaymentsHelper = async () => {
   });
 };
 
+export const getWelfarePaymentsHelper = async (welfareProgramId: string) => {
+  const payments = await prisma.payment.findMany({
+    where: { welfareProgramId },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+    orderBy: { paymentDate: "desc" },
+  });
+
+  return payments.map((payment) => ({
+    id: payment.id,
+    userId: payment.userId,
+    userName: payment.user.name,
+    amount: payment.amount.toString(),
+    paymentDate: payment.paymentDate.toISOString(),
+    paymentMode: payment.paymentMode,
+    status: payment.status,
+  }));
+};
+
 export const getPaymentsByUserIdHelper = async (userId: string) => {
   return await prisma.payment.findMany({
     where: { userId },

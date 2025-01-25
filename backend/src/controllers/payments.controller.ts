@@ -7,6 +7,7 @@ import {
   getAllPaymentsHelper,
   getPaymentByIdHelper,
   getPaymentsByUserIdHelper,
+  getWelfarePaymentsHelper,
   initializePaystackTransaction,
   updatePaymentByReferenceHelper,
   updatePaymentHelper,
@@ -110,6 +111,21 @@ export const getPaymentById = async (
     res.status(200).json({ payment });
   } catch (error) {
     next(new AppError("Error fetching payment", 500));
+  }
+};
+
+export const getWelfarePayments = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { welfareId } = req.params;
+
+  try {
+    const payments = await getWelfarePaymentsHelper(welfareId);
+    res.status(200).json(payments);
+  } catch (error) {
+    next(new AppError("Error fetching welfare payments", 500));
   }
 };
 
