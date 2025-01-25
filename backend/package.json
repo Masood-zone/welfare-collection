@@ -4,12 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "dev": "nodemon",
     "build": "tsc",
-    "postbuild": "prisma generate",
-    "start": "prisma migrate deploy && node dist/server.js",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate deploy"
+    "postbuild": "npx prisma generate && npx prisma migrate deploy",
+    "start": "node ./dist/src/server.js",
   },
   "keywords": [],
   "author": "",
