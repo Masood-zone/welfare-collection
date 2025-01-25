@@ -1,9 +1,9 @@
 import { Router } from "express";
-import v1Routes from "./v1";
+import webRoutes from "./web";
 
-const indexRoute = Router();
+const mainRouter = Router();
 
-// Version 1 API
-indexRoute.use("/v1", v1Routes);
+// Web routes under API v1
+mainRouter.use("/web", webRoutes);
 
-export default indexRoute;
+export default mainRouter;
