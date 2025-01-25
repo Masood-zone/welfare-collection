@@ -180,15 +180,27 @@ export const getWelfarePaymentsHelper = async (welfareProgramId: string) => {
     orderBy: { paymentDate: "desc" },
   });
 
-  return payments.map((payment) => ({
-    id: payment.id,
-    userId: payment.userId,
-    userName: payment.user.name,
-    amount: payment.amount.toString(),
-    paymentDate: payment.paymentDate.toISOString(),
-    paymentMode: payment.paymentMode,
-    status: payment.status,
-  }));
+  return payments.map(
+    (payment: {
+      id: string;
+      userId: string;
+      user: {
+        name: string;
+      };
+      amount: string;
+      paymentDate: Date;
+      paymentMode: string;
+      status: string;
+    }) => ({
+      id: payment.id,
+      userId: payment.userId,
+      userName: payment.user.name,
+      amount: payment.amount.toString(),
+      paymentDate: payment.paymentDate.toISOString(),
+      paymentMode: payment.paymentMode,
+      status: payment.status,
+    })
+  );
 };
 
 export const getPaymentsByUserIdHelper = async (userId: string) => {
