@@ -1,14 +1,5 @@
 import { Router } from "express";
-import {
-  registerUser,
-  loginUser,
-  updateUserData,
-  adminRegisterUser,
-  getAllAdmins,
-  getAllMembers,
-  getUserInfo,
-  deleteUser,
-} from "../../../controllers/users.controller";
+import * as user from "../../controllers/user.controller.ts"
 import {
   authenticateAdmin,
   authenticateUser,
@@ -17,13 +8,8 @@ import {
 const userRoutes = Router();
 
 // Admin Routes
-userRoutes.post("/admin/register", async (req, res, next) => {
-  try {
-    await adminRegisterUser(req, res, next);
-  } catch (error) {
-    next(error);
-  }
-});
+userRoutes.post("/admin/register", user.adminRegisterUser);
+
 // User Routes
 userRoutes.post("/register", async (req, res, next) => {
   try {
