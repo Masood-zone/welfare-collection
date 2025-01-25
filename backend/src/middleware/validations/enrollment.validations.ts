@@ -1,4 +1,4 @@
-import Joi from "joi";
+import * as Joi from "joi";
 
 export const createEnrollmentSchema = Joi.object({
   userId: Joi.string().required().messages({

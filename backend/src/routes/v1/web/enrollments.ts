@@ -27,23 +27,89 @@ enrollmentRoutes.post(
   "/",
   authenticateUser,
   validateRequest(createEnrollmentSchema),
-  createEnrollment
+  async (req, res, next) => {
+    try {
+      await createEnrollment(req, res, next);
+    } catch (error) {
+      next(error);
+    }
+  }
 );
-enrollmentRoutes.get("/", authenticateAdmin, getAllEnrollments);
-enrollmentRoutes.get("/:id", authenticateUser, getEnrollmentById);
-enrollmentRoutes.get("/user/:id", authenticateUser, getEnrollmentByUserId);
+enrollmentRoutes.get("/", authenticateAdmin, async (req, res, next) => {
+  try {
+    await getAllEnrollments(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+enrollmentRoutes.get("/:id", authenticateUser, async (req, res, next) => {
+  try {
+    await getEnrollmentById(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+enrollmentRoutes.get("/user/:id", authenticateUser, async (req, res, next) => {
+  try {
+    await getEnrollmentByUserId(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
 enrollmentRoutes.patch(
   "/:id",
   validateRequest(updateEnrollmentSchema),
   authenticateUser,
-  updateEnrollment
+  async (req, res, next) => {
+    try {
+      await updateEnrollment(req, res, next);
+    } catch (error) {
+      next(error);
+    }
+  }
 );
-enrollmentRoutes.delete("/:id", authenticateAdmin, deleteEnrollment);
+enrollmentRoutes.delete("/:id", authenticateAdmin, async (req, res, next) => {
+  try {
+    await deleteEnrollment(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
 // Re-submission route
-enrollmentRoutes.patch("/resubmit/:id", authenticateUser, resubmitEnrollment);
+enrollmentRoutes.patch(
+  "/resubmit/:id",
+  authenticateUser,
+  async (req, res, next) => {
+    try {
+      await resubmitEnrollment(req, res, next);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 // Approval route
-enrollmentRoutes.patch("/approve/:id", authenticateAdmin, approveEnrollment);
+enrollmentRoutes.patch(
+  "/approve/:id",
+  authenticateAdmin,
+  async (req, res, next) => {
+    try {
+      await approveEnrollment(req, res, next);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 // Rejection route
-enrollmentRoutes.patch("/reject/:id", authenticateAdmin, rejectEnrollment);
+enrollmentRoutes.patch(
+  "/reject/:id",
+  authenticateAdmin,
+  async (req, res, next) => {
+    try {
+      await rejectEnrollment(req, res, next);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 export default enrollmentRoutes;
