@@ -21,6 +21,7 @@ export const data = {
     {
       title: "Members",
       url: "#",
+      isActive: true,
       icon: Users,
       items: [
         {
@@ -37,6 +38,8 @@ export const data = {
       title: "Accounting",
       url: "#",
       icon: Wallet,
+      isActive: true,
+
       items: [
         {
           title: "Payments",
