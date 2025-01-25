@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { getAllAnalytics } from "../../../controllers/analytics.controller";
+import * as analytics from "../../../controllers/analytics.controller";
 import { authenticateAdmin } from "../../../middleware/auth.middleware";
 
 const analyticsRoutes = Router();
 
-analyticsRoutes.get("/", authenticateAdmin, getAllAnalytics);
+analyticsRoutes.get("/", authenticateAdmin, analytics.getAllAnalytics);
 
 export default analyticsRoutes;

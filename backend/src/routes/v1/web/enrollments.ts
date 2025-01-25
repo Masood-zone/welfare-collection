@@ -1,15 +1,5 @@
 import { Router } from "express";
-import {
-  createEnrollment,
-  getAllEnrollments,
-  getEnrollmentById,
-  updateEnrollment,
-  deleteEnrollment,
-  approveEnrollment,
-  getEnrollmentByUserId,
-  rejectEnrollment,
-  resubmitEnrollment,
-} from "../../../controllers/enrollments.controller";
+import * as enrollments from "../../../controllers/enrollments.controller";
 import {
   authenticateUser,
   authenticateAdmin,
@@ -29,7 +19,7 @@ enrollmentRoutes.post(
   validateRequest(createEnrollmentSchema),
   async (req, res, next) => {
     try {
-      await createEnrollment(req, res, next);
+      await enrollments.createEnrollment(req, res, next);
     } catch (error) {
       next(error);
     }
@@ -37,21 +27,21 @@ enrollmentRoutes.post(
 );
 enrollmentRoutes.get("/", authenticateAdmin, async (req, res, next) => {
   try {
-    await getAllEnrollments(req, res, next);
+    await enrollments.getAllEnrollments(req, res, next);
   } catch (error) {
     next(error);
   }
 });
 enrollmentRoutes.get("/:id", authenticateUser, async (req, res, next) => {
   try {
-    await getEnrollmentById(req, res, next);
+    await enrollments.getEnrollmentById(req, res, next);
   } catch (error) {
     next(error);
   }
 });
 enrollmentRoutes.get("/user/:id", authenticateUser, async (req, res, next) => {
   try {
-    await getEnrollmentByUserId(req, res, next);
+    await enrollments.getEnrollmentByUserId(req, res, next);
   } catch (error) {
     next(error);
   }
@@ -62,7 +52,7 @@ enrollmentRoutes.patch(
   authenticateUser,
   async (req, res, next) => {
     try {
-      await updateEnrollment(req, res, next);
+      await enrollments.updateEnrollment(req, res, next);
     } catch (error) {
       next(error);
     }
@@ -70,7 +60,7 @@ enrollmentRoutes.patch(
 );
 enrollmentRoutes.delete("/:id", authenticateAdmin, async (req, res, next) => {
   try {
-    await deleteEnrollment(req, res, next);
+    await enrollments.deleteEnrollment(req, res, next);
   } catch (error) {
     next(error);
   }
@@ -81,7 +71,7 @@ enrollmentRoutes.patch(
   authenticateUser,
   async (req, res, next) => {
     try {
-      await resubmitEnrollment(req, res, next);
+      await enrollments.resubmitEnrollment(req, res, next);
     } catch (error) {
       next(error);
     }
@@ -93,7 +83,7 @@ enrollmentRoutes.patch(
   authenticateAdmin,
   async (req, res, next) => {
     try {
-      await approveEnrollment(req, res, next);
+      await enrollments.approveEnrollment(req, res, next);
     } catch (error) {
       next(error);
     }
@@ -105,7 +95,7 @@ enrollmentRoutes.patch(
   authenticateAdmin,
   async (req, res, next) => {
     try {
-      await rejectEnrollment(req, res, next);
+      await enrollments.rejectEnrollment(req, res, next);
     } catch (error) {
       next(error);
     }

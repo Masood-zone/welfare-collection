@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as user from "../../controllers/user.controller.ts"
+import * as user from "../../../controllers/users.controller";
 import {
   authenticateAdmin,
   authenticateUser,
@@ -13,14 +13,14 @@ userRoutes.post("/admin/register", user.adminRegisterUser);
 // User Routes
 userRoutes.post("/register", async (req, res, next) => {
   try {
-    await registerUser(req, res, next);
+    await user.registerUser(req, res, next);
   } catch (error) {
     next(error);
   }
 });
 userRoutes.post("/login", async (req, res, next) => {
   try {
-    await loginUser(req, res, next);
+    await user.loginUser(req, res, next);
   } catch (error) {
     next(error);
   }
@@ -28,14 +28,14 @@ userRoutes.post("/login", async (req, res, next) => {
 // List all users routes
 userRoutes.get("/admin/list", authenticateAdmin, async (req, res, next) => {
   try {
-    await getAllAdmins(req, res, next);
+    await user.getAllAdmins(req, res, next);
   } catch (error) {
     next(error);
   }
 });
 userRoutes.get("/list", authenticateUser, async (req, res, next) => {
   try {
-    await getAllMembers(req, res, next);
+    await user.getAllMembers(req, res, next);
   } catch (error) {
     next(error);
   }
@@ -44,7 +44,7 @@ userRoutes.get("/list", authenticateUser, async (req, res, next) => {
 // Get user info
 userRoutes.get("/:id", authenticateUser, async (req, res, next) => {
   try {
-    await getUserInfo(req, res, next);
+    await user.getUserInfo(req, res, next);
   } catch (error) {
     next(error);
   }
@@ -52,7 +52,7 @@ userRoutes.get("/:id", authenticateUser, async (req, res, next) => {
 // Delete user route
 userRoutes.delete("/:id", authenticateAdmin, async (req, res, next) => {
   try {
-    await deleteUser(req, res, next);
+    await user.deleteUser(req, res, next);
   } catch (error) {
     next(error);
   }
@@ -61,7 +61,7 @@ userRoutes.delete("/:id", authenticateAdmin, async (req, res, next) => {
 // Update user data route
 userRoutes.patch("/update/:id", authenticateUser, async (req, res, next) => {
   try {
-    await updateUserData(req, res, next);
+    await user.updateUserData(req, res, next);
   } catch (error) {
     next(error);
   }

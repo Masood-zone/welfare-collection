@@ -1,16 +1,5 @@
 import { Router } from "express";
-import {
-  createPayment,
-  getAllPayments,
-  getPaymentById,
-  updatePayment,
-  deletePayment,
-  getUserPayments,
-  updatePaymentByReference,
-  initializePaystackPayment,
-  updatePaymentAmount,
-  getWelfarePayments,
-} from "../../../controllers/payments.controller";
+import * as payments from "../../../controllers/payments.controller";
 import {
   authenticateUser,
   authenticateAdmin,
@@ -27,37 +16,41 @@ paymentRoutes.post(
   "/",
   authenticateUser,
   validateRequest(createPaymentSchema),
-  createPayment
+  payments.createPayment
 );
 // Initialize Paystack payment
 paymentRoutes.post(
   "/initialize-paystack",
   authenticateUser,
   validateRequest(createPaymentSchema),
-  initializePaystackPayment
+  payments.initializePaystackPayment
 );
 // Update a created payment based on reference
 paymentRoutes.patch(
   "/:id/:reference",
   authenticateUser,
-  updatePaymentByReference
+  payments.updatePaymentByReference
 );
-paymentRoutes.get("/", authenticateAdmin, getAllPayments);
-paymentRoutes.get("/:id", authenticateUser, getPaymentById);
-paymentRoutes.get("/welfare/:welfareId", authenticateAdmin, getWelfarePayments);
+paymentRoutes.get("/", authenticateAdmin, payments.getAllPayments);
+paymentRoutes.get("/:id", authenticateUser, payments.getPaymentById);
+paymentRoutes.get(
+  "/welfare/:welfareId",
+  authenticateAdmin,
+  payments.getWelfarePayments
+);
 // Get User payments
-paymentRoutes.get("/user/:id", authenticateUser, getUserPayments);
+paymentRoutes.get("/user/:id", authenticateUser, payments.getUserPayments);
 paymentRoutes.patch(
   "/:id",
   authenticateAdmin,
   validateRequest(updatePaymentSchema),
-  updatePayment
+  payments.updatePayment
 );
 paymentRoutes.patch(
   "/user/:paymentId/pay-remaining",
   authenticateUser,
-  updatePaymentAmount
+  payments.updatePaymentAmount
 );
-paymentRoutes.delete("/:id", authenticateAdmin, deletePayment);
+paymentRoutes.delete("/:id", authenticateAdmin, payments.deletePayment);
 
 export default paymentRoutes;

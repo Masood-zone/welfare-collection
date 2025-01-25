@@ -1,11 +1,5 @@
 import { Router } from "express";
-import {
-  createExpense,
-  getAllExpenses,
-  getExpenseById,
-  updateExpense,
-  deleteExpense,
-} from "../../../controllers/expenses.controller";
+import * as expenses from "../../../controllers/expenses.controller";
 import { authenticateAdmin } from "../../../middleware/auth.middleware";
 import { validateRequest } from "../../../middleware/validations/validations.middleware";
 import {
@@ -19,16 +13,16 @@ expenseRoutes.post(
   "/",
   authenticateAdmin,
   validateRequest(createExpenseSchema),
-  createExpense
+  expenses.createExpense
 );
-expenseRoutes.get("/", authenticateAdmin, getAllExpenses);
-expenseRoutes.get("/:id", authenticateAdmin, getExpenseById);
+expenseRoutes.get("/", authenticateAdmin, expenses.getAllExpenses);
+expenseRoutes.get("/:id", authenticateAdmin, expenses.getExpenseById);
 expenseRoutes.patch(
   "/:id",
   authenticateAdmin,
   validateRequest(updateExpenseSchema),
-  updateExpense
+  expenses.updateExpense
 );
-expenseRoutes.delete("/:id", authenticateAdmin, deleteExpense);
+expenseRoutes.delete("/:id", authenticateAdmin, expenses.deleteExpense);
 
 export default expenseRoutes;

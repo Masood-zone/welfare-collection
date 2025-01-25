@@ -1,13 +1,5 @@
 import { Router } from "express";
-import {
-  createWelfareProgram,
-  getAllWelfarePrograms,
-  getWelfareProgramById,
-  updateWelfareProgram,
-  deleteWelfareProgram,
-  getWelfareProgramTotals,
-  getWelfareProgramExpenses,
-} from "../../../controllers/welfares.controller";
+import * as welfares from "../../../controllers/welfares.controller";
 import {
   authenticateAdmin,
   authenticateUser,
@@ -20,7 +12,7 @@ import { validateRequest } from "../../../middleware/validations/validations.mid
 
 const welfareProgramRoutes = Router();
 
-welfareProgramRoutes.get("/", authenticateUser, getAllWelfarePrograms);
+welfareProgramRoutes.get("/", authenticateUser, welfares.getAllWelfarePrograms);
 
 welfareProgramRoutes.post(
   "/",
@@ -28,29 +20,37 @@ welfareProgramRoutes.post(
   validateRequest(createWelfareProgramSchema),
   async (req, res, next) => {
     try {
-      await createWelfareProgram(req, res, next);
+      await welfares.createWelfareProgram(req, res, next);
     } catch (error) {
       next(error);
     }
   }
 );
-welfareProgramRoutes.get("/:id", authenticateUser, getWelfareProgramById);
+welfareProgramRoutes.get(
+  "/:id",
+  authenticateUser,
+  welfares.getWelfareProgramById
+);
 welfareProgramRoutes.patch(
   "/:id",
   authenticateAdmin,
   validateRequest(updateWelfareProgramSchema),
-  updateWelfareProgram
+  welfares.updateWelfareProgram
 );
 welfareProgramRoutes.get(
   "/:id/totals",
   authenticateAdmin,
-  getWelfareProgramTotals
+  welfares.getWelfareProgramTotals
 );
 welfareProgramRoutes.get(
   "/:id/expenses",
   authenticateAdmin,
-  getWelfareProgramExpenses
+  welfares.getWelfareProgramExpenses
 );
-welfareProgramRoutes.delete("/:id", authenticateAdmin, deleteWelfareProgram);
+welfareProgramRoutes.delete(
+  "/:id",
+  authenticateAdmin,
+  welfares.deleteWelfareProgram
+);
 
 export default welfareProgramRoutes;
