@@ -3,14 +3,15 @@ import { AppError } from "../utils/app-error";
 import {
   createPaymentHelper,
   deletePaymentHelper,
+  findPaymentByIdHelper,
   getAllPaymentsHelper,
   getPaymentByIdHelper,
   getPaymentsByUserIdHelper,
   initializePaystackTransaction,
   updatePaymentByReferenceHelper,
   updatePaymentHelper,
+  updatePaymentRemainingAmountHelper,
 } from "../helpers/payments.helper";
-import { PaymentStatus } from "../interfaces/all.interfaces";
 
 export const createPayment = async (
   req: Request,
@@ -30,16 +31,14 @@ export const createPayment = async (
       access_code: "", // No access code for cash payments
       status: "PAID", // Cash payments are considered paid immediately
     });
-    res
-      .status(201)
-      .json({
-        message: "Cash payment created successfully",
-        payment,
-        cycleStart: payment.cycleStart,
-        cycleEnd: payment.cycleEnd,
-        remainingAmount: payment.remainingAmount,
-        prepaidAmount: payment.prepaidAmount,
-      });
+    res.status(201).json({
+      message: "Cash payment created successfully",
+      payment,
+      cycleStart: payment.cycleStart,
+      cycleEnd: payment.cycleEnd,
+      remainingAmount: payment.remainingAmount,
+      prepaidAmount: payment.prepaidAmount,
+    });
   } catch (error) {
     next(new AppError("Error creating cash payment", 500));
   }
@@ -186,6 +185,34 @@ export const updatePayment = async (
     });
   } catch (error) {
     next(new AppError("Error updating payment", 500));
+  }
+};
+
+export const updatePaymentAmount = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { paymentId } = req.params;
+  const { amount } = req.body;
+
+  // Check if payment exists
+  const payment = await findPaymentByIdHelper(paymentId);
+  // If payment does not exist, return an error
+  if (!payment) {
+    return next(new AppError("Payment not found", 404));
+  }
+
+  try {
+    const { updatedPayment, updatedPaymentTracker } =
+      await updatePaymentRemainingAmountHelper(paymentId, amount);
+    res.status(200).json({
+      message: "Payment amount updated successfully",
+      payment: updatedPayment,
+      paymentTracker: updatedPaymentTracker,
+    });
+  } catch (error) {
+    next(new AppError("Error updating payment amount", 500));
   }
 };
 

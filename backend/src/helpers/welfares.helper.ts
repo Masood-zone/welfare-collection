@@ -20,7 +20,8 @@ export const createWelfareProgramHelper = async (data: {
     data: {
       name: data.name,
       description: data.description,
-      amount: dailyAmount,
+      expectedAmount: dailyAmount,
+      amount: data.amount,
       paymentCycle: data.paymentCycle,
       createdBy: data.createdBy,
     },

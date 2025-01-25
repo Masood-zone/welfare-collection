@@ -30,8 +30,8 @@ export const createWelfareProgram = async (
     res.status(201).json({
       message: "Welfare program created successfully",
       welfareProgram,
-      dailyAmount: welfareProgram.amount,
-      originalAmount: amount,
+      // dailyAmount: welfareProgram.amount,
+      // originalAmount: amount,
     });
   } catch (error) {
     next(new AppError("Error creating welfare program", 500));

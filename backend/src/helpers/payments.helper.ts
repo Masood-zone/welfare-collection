@@ -1,5 +1,4 @@
 import prisma from "../config/db";
-import { PaymentMode, PaymentStatus } from "../interfaces/all.interfaces";
 import generateUniqueReceiptNumber from "../utils/generateRecieptNumber";
 import axios from "axios";
 
@@ -112,7 +111,7 @@ export const createPaymentHelper = async (data: {
       break;
     case "MONTHLY":
       cycleEnd.setMonth(cycleEnd.getMonth() + 1);
-      expectedAmount *= 30;
+      // expectedAmount *= 30;
       break;
   }
 
@@ -170,7 +169,14 @@ export const getAllPaymentsHelper = async () => {
 export const getPaymentsByUserIdHelper = async (userId: string) => {
   return await prisma.payment.findMany({
     where: { userId },
-    include: { user: true, welfareProgram: true },
+    include: {
+      user: true,
+      welfareProgram: true,
+      paymentTrackers: {
+        orderBy: { cycleEnd: "desc" },
+        take: 1,
+      },
+    },
   });
 };
 
@@ -200,6 +206,65 @@ export const updatePaymentHelper = async (
   });
 };
 
+export const updatePaymentRemainingAmountHelper = async (
+  id: string,
+  amount: number
+) => {
+  const payment = await prisma.payment.findUnique({
+    where: { id },
+    include: {
+      welfareProgram: true,
+      paymentTrackers: {
+        orderBy: { cycleEnd: "desc" },
+        take: 1,
+      },
+    },
+  });
+
+  if (!payment) {
+    throw new Error("Payment not found");
+  }
+
+  const latestPaymentTracker = payment?.paymentTrackers?.[0];
+
+  if (!latestPaymentTracker) {
+    throw new Error("Payment tracker not found");
+  }
+
+  const expectedAmount = Number(payment.welfareProgram.amount);
+  const currentPaidAmount = Number(payment.amount);
+  const newTotalAmount = currentPaidAmount + amount;
+  const remainingAmount = Math.max(expectedAmount - newTotalAmount, 0);
+
+  if (amount > latestPaymentTracker.remainingAmount.toNumber()) {
+    throw new Error("Amount exceeds remaining amount");
+  }
+
+  let cycleEnd = latestPaymentTracker.cycleEnd;
+  if (newTotalAmount < expectedAmount) {
+    const paidDays =
+      (newTotalAmount / expectedAmount) *
+      (cycleEnd.getTime() - latestPaymentTracker.cycleStart.getTime());
+    cycleEnd = new Date(latestPaymentTracker.cycleStart.getTime() + paidDays);
+  }
+
+  const updatedPayment = await prisma.payment.update({
+    where: { id },
+    data: { amount: newTotalAmount },
+  });
+
+  const updatedPaymentTracker = await prisma.paymentTracker.update({
+    where: { id: latestPaymentTracker.id },
+    data: {
+      cycleEnd,
+      remainingAmount,
+      paymentStatus: remainingAmount === 0 ? "PAID" : "UNPAID",
+    },
+  });
+
+  return { updatedPayment, updatedPaymentTracker };
+};
+
 export const deletePaymentHelper = async (id: string) => {
   return await prisma.payment.delete({ where: { id } });
 };
@@ -209,8 +274,71 @@ export const updatePaymentByReferenceHelper = async (
   reference: string,
   status: "UNPAID" | "PAID" | "PREPAID"
 ) => {
-  return await prisma.payment.update({
+  const payment = await prisma.payment.findUnique({
+    where: { id, paystackreference: reference },
+    include: {
+      welfareProgram: true,
+      paymentTrackers: {
+        orderBy: { cycleEnd: "desc" },
+        take: 1,
+      },
+    },
+  });
+
+  if (!payment) {
+    throw new Error("Payment not found");
+  }
+
+  const latestPaymentTracker = payment.paymentTrackers[0];
+
+  if (!latestPaymentTracker) {
+    throw new Error("Payment tracker not found");
+  }
+
+  const cycleStart = latestPaymentTracker.cycleStart;
+  let cycleEnd = latestPaymentTracker.cycleEnd;
+  let remainingAmount = latestPaymentTracker.remainingAmount.toNumber();
+  let prepaidAmount = latestPaymentTracker.prepaidAmount.toNumber();
+
+  const expectedAmount = Number(payment.welfareProgram.amount);
+  const paidAmount = Number(payment.amount);
+
+  if (status === "PAID") {
+    if (paidAmount < expectedAmount) {
+      remainingAmount = expectedAmount - paidAmount;
+      const paidDays =
+        (paidAmount / expectedAmount) *
+        (cycleEnd.getTime() - cycleStart.getTime());
+      cycleEnd = new Date(cycleStart.getTime() + paidDays);
+    } else if (paidAmount > expectedAmount) {
+      prepaidAmount = paidAmount - expectedAmount;
+      const extraDays = prepaidAmount / expectedAmount;
+      cycleEnd = new Date(cycleEnd.getTime() + extraDays * 24 * 60 * 60 * 1000);
+      remainingAmount = 0;
+    } else {
+      remainingAmount = 0;
+      prepaidAmount = 0;
+    }
+  } else if (status === "UNPAID") {
+    remainingAmount = expectedAmount;
+    cycleEnd = cycleStart;
+    prepaidAmount = 0;
+  }
+
+  const updatedPayment = await prisma.payment.update({
     where: { id, paystackreference: reference },
     data: { status },
   });
+
+  const updatedPaymentTracker = await prisma.paymentTracker.update({
+    where: { id: latestPaymentTracker.id },
+    data: {
+      paymentStatus: status,
+      cycleEnd,
+      remainingAmount,
+      prepaidAmount,
+    },
+  });
+
+  return { updatedPayment, updatedPaymentTracker };
 };

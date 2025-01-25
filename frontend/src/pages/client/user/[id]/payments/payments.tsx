@@ -32,10 +32,10 @@ export default function Payments() {
             <Skeleton key={index} className="h-[200px] w-full" />
           ))}
         </div>
-      ) : data && data.length > 0 ? (
+      ) : data && data?.length > 0 ? (
         <div className="w-full grid gap-4 md:grid-cols-2 lg:grid-cols-2">
           {data.map((payment: Payments) => (
-            <PaymentCard key={payment.id} payment={payment} />
+            <PaymentCard key={payment?.id} payment={payment} />
           ))}
         </div>
       ) : (

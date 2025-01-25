@@ -104,6 +104,7 @@ export default function MakePayment() {
       },
     });
   };
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       if (values.paymentMode === "CASH") {
@@ -118,7 +119,7 @@ export default function MakePayment() {
           email: user?.email ?? "",
           ...values,
         });
-        handlePaystackPayment(paymentData.payment);
+        await handlePaystackPayment(paymentData.payment?.payment);
       }
     } catch (error) {
       console.error(error);

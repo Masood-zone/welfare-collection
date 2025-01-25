@@ -61,6 +61,32 @@ export function PaymentTrackCard({
               </span>
             </div>
           )}
+          {paymentTrack.remainingAmount !== "0" && (
+            <div className="flex items-center">
+              <span className="text-sm text-muted-foreground">Remaining:</span>
+              <span className="ml-1">
+                Ghc{paymentTrack?.remainingAmount} on{" "}
+                {paymentTrack?.payment?.paymentDate
+                  ? new Date(
+                      paymentTrack.payment.paymentDate
+                    ).toLocaleDateString()
+                  : "N/A"}
+              </span>
+            </div>
+          )}
+          {paymentTrack.prepaidAmount !== "0" && (
+            <div className="flex items-center">
+              <span className="text-sm text-muted-foreground">Prepaid:</span>
+              <span className="ml-1">
+                Ghc{paymentTrack?.prepaidAmount} on{" "}
+                {paymentTrack?.payment?.paymentDate
+                  ? new Date(
+                      paymentTrack.payment.paymentDate
+                    ).toLocaleDateString()
+                  : "N/A"}
+              </span>
+            </div>
+          )}
         </div>
       </CardContent>
       <CardFooter>

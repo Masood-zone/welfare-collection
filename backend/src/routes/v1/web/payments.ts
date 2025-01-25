@@ -8,6 +8,7 @@ import {
   getUserPayments,
   updatePaymentByReference,
   initializePaystackPayment,
+  updatePaymentAmount,
 } from "../../../controllers/payments.controller";
 import {
   authenticateUser,
@@ -49,6 +50,11 @@ paymentRoutes.patch(
   authenticateAdmin,
   validateRequest(updatePaymentSchema),
   updatePayment
+);
+paymentRoutes.patch(
+  "/user/:paymentId/pay-remaining",
+  authenticateUser,
+  updatePaymentAmount
 );
 paymentRoutes.delete("/:id", authenticateAdmin, deletePayment);
 

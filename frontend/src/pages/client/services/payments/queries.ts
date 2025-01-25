@@ -5,6 +5,7 @@ import {
   fetchMyPayments,
   initializePaystackPayment,
   paymentDetails,
+  payRemaining,
   trackMyPayments,
   updatePayment,
   updatePaymentStatus,
@@ -55,7 +56,26 @@ export const useFetchMyPayments = (userId: string) => {
 export const useUpdatePayment = (userId: string) => {
   return useMutation({
     mutationFn: (data: UpdatePayment) => updatePayment(data),
-    mutationKey: ["myUpdatePayment", userId],
+    mutationKey: ["myPaymentUpdate", userId],
+  });
+};
+
+export const usePayRemaining = (userId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: UpdatePayment) => payRemaining(data),
+    mutationKey: ["myRemainingPayments", userId],
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["myPayments", userId] });
+      toast.success("Payment Recorded", {
+        description: "Your payment has been recorded successfully.",
+      });
+    },
+    onError: (error: ErrorResponse) => {
+      toast.error(error.status, {
+        description: error.message,
+      });
+    },
   });
 };
 

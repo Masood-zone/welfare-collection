@@ -46,9 +46,11 @@ interface Payments {
   userId: string;
   welfareProgramId: string;
   amount: number;
+  status: "PAID" | "UNPAID";
   paymentDate: string;
   paymentMode: "CASH" | "CARD" | "MOMO";
   receiptNumber: string;
+  paymentTrackers: PaymentTrack[];
   welfareProgram: Pick<
     WelfareProgram,
     "id" | "name" | "description" | "amount" | "paymentCycle"
@@ -120,7 +122,13 @@ type EnrollmentLists = Pick<
  */
 type CreatePayment = Omit<
   Payments,
-  "id" | "user" | "welfareProgram" | "paymentDate" | "receiptNumber"
+  | "id"
+  | "user"
+  | "welfareProgram"
+  | "paymentDate"
+  | "receiptNumber"
+  | "status"
+  | "paymentTrackers"
 > & { email: string };
 type UpdatePayment = Partial<Omit<Payments, "user" | "welfareProgram">>;
 type PaymentLists = Pick<
@@ -153,6 +161,8 @@ interface PaymentTrack {
   cycleStart: string;
   cycleEnd: string;
   paymentStatus: string;
+  prepaidAmount: string;
+  remainingAmount: string;
   welfareProgram: {
     name: string;
     amount: string;

@@ -20,6 +20,14 @@ export const updatePayment = async (data: UpdatePayment) => {
   return response.data;
 };
 
+export const payRemaining = async (data: UpdatePayment) => {
+  const response = await api.patch(
+    `/payments/user/${data.id}/pay-remaining`,
+    data
+  );
+  return response.data;
+};
+
 export const updatePaymentStatus = async (
   id: string,
   reference: string,
