@@ -98,7 +98,7 @@ export const createPaymentHelper = async (data: {
   const now = new Date();
   let cycleStart = now;
   let cycleEnd = new Date();
-  let expectedAmount: number = welfareProgram.amount.toNumber();
+  let expectedAmount: number = welfareProgram.amount;
   let remainingAmount = 0;
   let prepaidAmount = 0;
 
@@ -125,7 +125,7 @@ export const createPaymentHelper = async (data: {
     );
   } else if (data.amount > expectedAmount) {
     prepaidAmount = data.amount - expectedAmount;
-    const extraDays = prepaidAmount / welfareProgram.amount.toNumber();
+    const extraDays = prepaidAmount / welfareProgram.amount;
     cycleEnd.setDate(cycleEnd.getDate() + Math.floor(extraDays));
   }
 
@@ -180,27 +180,15 @@ export const getWelfarePaymentsHelper = async (welfareProgramId: string) => {
     orderBy: { paymentDate: "desc" },
   });
 
-  return payments.map(
-    (payment: {
-      id: string;
-      userId: string;
-      user: {
-        name: string;
-      };
-      amount: string;
-      paymentDate: Date;
-      paymentMode: string;
-      status: string;
-    }) => ({
-      id: payment.id,
-      userId: payment.userId,
-      userName: payment.user.name,
-      amount: payment.amount.toString(),
-      paymentDate: payment.paymentDate.toISOString(),
-      paymentMode: payment.paymentMode,
-      status: payment.status,
-    })
-  );
+  return payments.map((payment) => ({
+    id: payment.id,
+    userId: payment.userId,
+    userName: payment.user.name,
+    amount: payment.amount,
+    paymentDate: payment.paymentDate,
+    paymentMode: payment.paymentMode,
+    status: payment.status,
+  }));
 };
 
 export const getPaymentsByUserIdHelper = async (userId: string) => {
@@ -273,7 +261,7 @@ export const updatePaymentRemainingAmountHelper = async (
   const newTotalAmount = currentPaidAmount + amount;
   const remainingAmount = Math.max(expectedAmount - newTotalAmount, 0);
 
-  if (amount > latestPaymentTracker.remainingAmount.toNumber()) {
+  if (amount > latestPaymentTracker.remainingAmount) {
     throw new Error("Amount exceeds remaining amount");
   }
 
@@ -334,8 +322,8 @@ export const updatePaymentByReferenceHelper = async (
 
   const cycleStart = latestPaymentTracker.cycleStart;
   let cycleEnd = latestPaymentTracker.cycleEnd;
-  let remainingAmount = latestPaymentTracker.remainingAmount.toNumber();
-  let prepaidAmount = latestPaymentTracker.prepaidAmount.toNumber();
+  let remainingAmount = latestPaymentTracker.remainingAmount;
+  let prepaidAmount = latestPaymentTracker.prepaidAmount;
 
   const expectedAmount = Number(payment.welfareProgram.amount);
   const paidAmount = Number(payment.amount);

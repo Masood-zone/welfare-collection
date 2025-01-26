@@ -25,8 +25,8 @@ model WelfareProgram {
   id            String      @id @default(cuid())
   name          String      @unique
   description   String
-  amount        Decimal     @default(0.0)
-  expectedAmount Decimal     @default(0.0)
+  amount        Float     @default(0.0)
+  expectedAmount Float     @default(0.0)
   paymentCycle  PaymentCycle
   createdBy     String      // Admin who created the program
   createdByUser User       @relation(fields: [createdBy], references: [id],onDelete: Cascade)
@@ -53,7 +53,7 @@ model Payment {
   user            User      @relation(fields: [userId], references: [id],onDelete: Cascade)
   welfareProgramId String
   welfareProgram  WelfareProgram @relation(fields: [welfareProgramId], references: [id], onDelete: Cascade)
-  amount          Decimal     @default(0.0)
+  amount          Float     @default(0.0)
   paymentDate     DateTime  @default(now())
   paymentMode     PaymentMode
   receiptNumber   String    @unique
@@ -74,14 +74,14 @@ model PaymentTracker {
   paymentStatus   PaymentStatus
   paymentId       String
   payment         Payment   @relation(fields: [paymentId], references: [id], onDelete: Cascade)
-  remainingAmount Decimal   @default(0)
-  prepaidAmount   Decimal   @default(0)
+  remainingAmount Float   @default(0)
+  prepaidAmount   Float   @default(0)
 }
 
 model Expense {
   id            String    @id @default(cuid())
   description   String
-  amount        Decimal     @default(0.0)
+  amount        Float     @default(0.0)
   welfareProgramId String
   welfareProgram WelfareProgram @relation(fields: [welfareProgramId], references: [id], onDelete: Cascade)
   recordedAt    DateTime  @default(now())
@@ -91,7 +91,7 @@ model Expense {
 model Analytics {
   id                String    @id @default(cuid())
   totalMembers      Int       @default(0)
-  totalRevenue      Decimal   @default(0.0)
+  totalRevenue      Float   @default(0.0)
   recentPayments    Json      // Store recent transactions for analytics
   monthlyPayments   Json      // Monthly revenue stats
   weeklyPayments    Json      // Weekly revenue stats
