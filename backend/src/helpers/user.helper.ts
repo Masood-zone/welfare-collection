@@ -1,6 +1,6 @@
-import prisma from "../config/db";
 import * as bcrypt from "bcrypt";
 import { Role } from "../interfaces/user.interfaces";
+import prisma from "../config/db";
 
 export const createUser = async (data: {
   name: string;
