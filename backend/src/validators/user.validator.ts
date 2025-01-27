@@ -9,7 +9,7 @@ export const userSchema = z.object({
     fullname: z.string({required_error: "Full name cannot be empty"})
     .trim()
     .min(5, "Full name must be at least 5 characters long"),
-    email: z.string().email("please provide a valid email")
+    email: z.string({required_error: "please provide a valid email"}).email()
     .trim(),
     phoneNumber: z.string({required_error: "Please provide a phone number"})
     .min(10, "Phone number must be at least 10 digits long")

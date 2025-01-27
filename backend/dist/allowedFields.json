@@ -1,0 +1,149 @@
+[
+  {
+    "modelName": "",
+    "fields": []
+  },
+  {
+    "modelName": "client",
+    "fields": [
+      "provider"
+    ]
+  },
+  {
+    "modelName": "db",
+    "fields": [
+      "provider",
+      "url"
+    ]
+  },
+  {
+    "modelName": "User",
+    "fields": [
+      "id",
+      "fullname",
+      "email",
+      "phoneNumber",
+      "password",
+      "role",
+      "registeredAt"
+    ]
+  },
+  {
+    "modelName": "WelfareProgram",
+    "fields": [
+      "id",
+      "name",
+      "description",
+      "amount",
+      "expectedAmount",
+      "paymentCycle",
+      "createdBy",
+      "createdAt"
+    ]
+  },
+  {
+    "modelName": "Enrollment",
+    "fields": [
+      "id",
+      "userId",
+      "welfareProgramId",
+      "status",
+      "enrolledAt"
+    ]
+  },
+  {
+    "modelName": "Payment",
+    "fields": [
+      "id",
+      "userId",
+      "welfareProgramId",
+      "amount",
+      "paymentDate",
+      "paymentMode",
+      "receiptNumber",
+      "paystackreference",
+      "access_code",
+      "status"
+    ]
+  },
+  {
+    "modelName": "PaymentTracker",
+    "fields": [
+      "id",
+      "userId",
+      "welfareProgramId",
+      "cycleStart",
+      "cycleEnd",
+      "paymentStatus",
+      "paymentId",
+      "remainingAmount",
+      "prepaidAmount"
+    ]
+  },
+  {
+    "modelName": "Expense",
+    "fields": [
+      "id",
+      "description",
+      "amount",
+      "welfareProgramId",
+      "recordedAt",
+      "recordedBy"
+    ]
+  },
+  {
+    "modelName": "Analytics",
+    "fields": [
+      "id",
+      "totalMembers",
+      "totalRevenue"
+    ]
+  },
+  {
+    "modelName": "Role",
+    "fields": [
+      "MEMBER",
+      "ADMIN"
+    ]
+  },
+  {
+    "modelName": "PaymentCycle",
+    "fields": [
+      "DAILY",
+      "WEEKLY",
+      "MONTHLY"
+    ]
+  },
+  {
+    "modelName": "FormStatus",
+    "fields": [
+      "PENDING",
+      "APPROVED",
+      "REJECTED"
+    ]
+  },
+  {
+    "modelName": "EnrollmentStatus",
+    "fields": [
+      "PENDING",
+      "APPROVED",
+      "REJECTED"
+    ]
+  },
+  {
+    "modelName": "PaymentMode",
+    "fields": [
+      "MOMO",
+      "CARD",
+      "CASH"
+    ]
+  },
+  {
+    "modelName": "PaymentStatus",
+    "fields": [
+      "PAID",
+      "UNPAID",
+      "PREPAID"
+    ]
+  }
+]

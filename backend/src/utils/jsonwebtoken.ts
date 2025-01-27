@@ -7,17 +7,14 @@ import { HttpStatus } from "./http-status";
 // Define the payload to handle both students and tutors
 export interface UserPayload {
   id: string;
-  role: 'student' | 'tutor' | 'admin' | 'guardian';
+  role: 'admin' | 'member'
   
 }
 
 declare global {
   namespace Express {
     interface Request {
-      student?: UserPayload; // student payload with role
-      tutor?: UserPayload;   // tutor payload with role
-      admin?:UserPayload;
-      guardian?: UserPayload;
+      User?: UserPayload; // User payload with role
     }
   }
 }
@@ -40,12 +37,10 @@ export const authenticateJWT = (
         );
       }
       // Attach the user to the request based on role
-      if (decoded && (decoded as UserPayload).role === "student") {
-        req.student = decoded as UserPayload;
-      } else if (decoded && (decoded as UserPayload).role === "tutor") {
-        req.tutor = decoded as UserPayload;
-      }else if (decoded && (decoded as UserPayload).role === "admin"){
-        req.admin = decoded as UserPayload;
+      if (decoded && (decoded as UserPayload).role === "admin") {
+        req.User = decoded as UserPayload;
+      } else if (decoded && (decoded as UserPayload).role === "member") {
+        req.User = decoded as UserPayload;
       }
       next();
     });
@@ -55,19 +50,20 @@ export const authenticateJWT = (
 
 };
 
-
-// Function to sign a JWT token with the student payload
 export const signToken = (payload: UserPayload): string => {
-  if (!process.env.JWT_SECRET || !process.env.JWT_EXPIRES_IN) {
+  const secret = process.env.JWT_SECRET!;
+  if (!secret) {
     throw new HttpException(
       HttpStatus.INTERNAL_SERVER_ERROR,
       "JWT configuration is missing"
     );
   }
-  return jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
+
+  return jwt.sign(payload, secret, {
+    expiresIn: "8hr"
   });
 };
+
 
 
 
@@ -82,14 +78,14 @@ export const setInvalidToken = (): string => {
     );
   }
   return jwt.sign({ logout: "logout" }, process.env.JWT_SECRET, {
-    expiresIn: "1hr", // Short-lived token
+    expiresIn: "30s",   // Short-lived token
   });
 };
 
 
 export const authorizeRole = (allowedRoles: string[]) => {
   return (req: Request, res: Response, next: NextFunction): void => {
-    const user = req.student || req.tutor || req.admin || req.guardian;
+    const user = req.User
     
     if (!user || !allowedRoles.includes(user.role)) {
       return next(new HttpException(HttpStatus.FORBIDDEN, "Access denied"));

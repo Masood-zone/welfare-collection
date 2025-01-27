@@ -384,7 +384,7 @@
                   "path": {
                     "kind": "path",
                     "value": [
-                      "cuid"
+                      "uuid"
                     ],
                     "location": {
                       "start": {
@@ -1290,7 +1290,7 @@
                   "path": {
                     "kind": "path",
                     "value": [
-                      "cuid"
+                      "uuid"
                     ],
                     "location": {
                       "start": {
@@ -2448,7 +2448,7 @@
                   "path": {
                     "kind": "path",
                     "value": [
-                      "cuid"
+                      "uuid"
                     ],
                     "location": {
                       "start": {
@@ -3287,7 +3287,7 @@
                   "path": {
                     "kind": "path",
                     "value": [
-                      "cuid"
+                      "uuid"
                     ],
                     "location": {
                       "start": {
@@ -4547,7 +4547,7 @@
                   "path": {
                     "kind": "path",
                     "value": [
-                      "cuid"
+                      "uuid"
                     ],
                     "location": {
                       "start": {
@@ -5810,7 +5810,7 @@
                   "path": {
                     "kind": "path",
                     "value": [
-                      "cuid"
+                      "uuid"
                     ],
                     "location": {
                       "start": {
@@ -6554,7 +6554,7 @@
                   "path": {
                     "kind": "path",
                     "value": [
-                      "cuid"
+                      "uuid"
                     ],
                     "location": {
                       "start": {

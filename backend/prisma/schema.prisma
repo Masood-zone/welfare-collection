@@ -14,7 +14,7 @@ datasource db {
 }
 
 model User {
-  id              String           @id @default(cuid())
+  id              String           @id @default(uuid())
   fullname        String
   email           String           @unique
   phoneNumber     String           @unique
@@ -28,7 +28,7 @@ model User {
 }
 
 model WelfareProgram {
-  id              String           @id @default(cuid())
+  id              String           @id @default(uuid())
   name            String           @unique
   description     String
   amount          Float            @default(0.0)
@@ -44,7 +44,7 @@ model WelfareProgram {
 }
 
 model Enrollment {
-  id               String           @id @default(cuid())
+  id               String           @id @default(uuid())
   userId           String
   user             User             @relation(fields: [userId], references: [id])
   welfareProgramId String
@@ -54,7 +54,7 @@ model Enrollment {
 }
 
 model Payment {
-  id                String           @id @default(cuid())
+  id                String           @id @default(uuid())
   userId            String
   user              User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   welfareProgramId  String
@@ -70,7 +70,7 @@ model Payment {
 }
 
 model PaymentTracker {
-  id               String         @id @default(cuid())
+  id               String         @id @default(uuid())
   userId           String
   user             User           @relation(fields: [userId], references: [id])
   welfareProgramId String
@@ -85,7 +85,7 @@ model PaymentTracker {
 }
 
 model Expense {
-  id               String         @id @default(cuid())
+  id               String         @id @default(uuid())
   description      String
   amount           Float          @default(0.0)
   welfareProgramId String
@@ -95,7 +95,7 @@ model Expense {
 }
 
 model Analytics {
-  id              String   @id @default(cuid())
+  id              String   @id @default(uuid())
   totalMembers    Int      @default(0)
   totalRevenue    Float    @default(0.0)
   recentPayments  String[] // Store recent transactions for analytics

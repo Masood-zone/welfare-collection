@@ -2,12 +2,12 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "copy-files": "cp ./allowedFields.json dist/",
     "build": "tsc && pnpm copy-files",
-    "start": "node ./dist/src/index.js",
+    "start": "node ./dist/src/server.js",
     "dev": "nodemon",
     "migrate": "npx prisma migrate dev --name init && pnpm extra:fields",
     "generate": "npx prisma generate",
@@ -27,6 +27,7 @@
     "cloudinary": "^2.5.1",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "fs": "0.0.1-security",
     "husky": "^9.1.7",
@@ -35,14 +36,18 @@
     "morgan": "^1.10.0",
     "multer": "1.4.5-lts.1",
     "nodemailer": "^6.10.0",
+    "nodemon": "^3.1.9",
     "prisma": "^6.2.1",
     "ts-node": "^10.9.2",
     "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
+    "@types/cors": "^2.8.17",
+    "@types/dotenv": "^8.2.3",
     "@types/jsonwebtoken": "^9.0.8",
     "@types/multer": "^1.4.12",
-    "@types/nodemailer": "^6.4.17"
+    "@types/nodemailer": "^6.4.17",
+    "typescript": "^5.7.3"
   }
 }
