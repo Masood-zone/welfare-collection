@@ -10,5 +10,24 @@ userRoute.post("/signUp",
     user.signUp
 );
 
+userRoute.get("/", 
+    user.fetchUsers
+);
+
+userRoute.get("/getByEmail", 
+    user.fetchUserByEmail
+);
+
+userRoute.get("/:id", 
+    user.fetchUserById
+);
+
+userRoute.put("/:id", 
+    user.updateUser
+);
+
+userRoute.delete("/:id", 
+    user.deleteUser
+);
 
 export default userRoute;
