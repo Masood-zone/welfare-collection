@@ -26,6 +26,17 @@ export const fetchUsers = catchAsync(async(
 );
 
 
+export const login = catchAsync(async(
+    req: Request,
+    res: Response,
+    next: NextFunction
+)=>{
+    const { email, password } = req.body;
+    const user = await userServices.signIn(email, password)
+    res.status(HttpStatus.OK).json({message: "login successfully", user });
+});
+
+
 export const fetchUserByEmail = catchAsync(async(
     req: Request,
     res: Response,

@@ -2,7 +2,7 @@ import prisma from "../utils/prisma";
 import { throwError } from "../middlewares/errorHandler";
 import { HttpStatus } from "../utils/http-status";
 import { userSchema, userData } from "../validators/user.validator";
-import { hash } from "../utils/bcrypt";
+import { hash, compare } from "../utils/bcrypt";
 
 
 export const userServices = {
@@ -30,7 +30,6 @@ export const userServices = {
        }
     },
 
-
     getAllUsers: async () => {
         const users = await prisma.user.findMany();
         if (!users.length){
@@ -53,8 +52,7 @@ export const userServices = {
         if (!user){
             throwError(HttpStatus.NOT_FOUND, "User not found");
         }else{
-            const { password,...userWithoutPassword } = user;
-            return userWithoutPassword;
+            return user;
         }
     },
 
@@ -94,5 +92,17 @@ export const userServices = {
         }else{
             return deletedUser;
         }
-    }
+    },
+
+    signIn: async(email: string, password: string)=>{
+        const fetchedUser = await userServices.getUserByEmail(email)
+        const validatedPassword = await compare(password, fetchedUser?.password!)
+        if(!validatedPassword){
+            throwError(HttpStatus.BAD_REQUEST, "Invalid email or password")
+        }else{
+            return fetchedUser
+        }
+    },
+
+   
 };

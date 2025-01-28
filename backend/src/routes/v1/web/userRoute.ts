@@ -10,6 +10,10 @@ userRoute.post("/signUp",
     user.signUp
 );
 
+userRoute.post("/login", 
+    user.login
+);
+
 userRoute.get("/", 
     user.fetchUsers
 );
