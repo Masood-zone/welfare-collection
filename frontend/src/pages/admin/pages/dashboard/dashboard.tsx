@@ -3,6 +3,7 @@ import { useGetAnalytics } from "../../services/analytics/queries";
 import { StatCard } from "../../components/analytics/stat-card";
 import { PaymentChart } from "../../components/analytics/payments-charts";
 import { RecentPayments } from "../../components/analytics/recent-payments";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Dashboard() {
   const { data: analytics, isLoading } = useGetAnalytics();
@@ -11,11 +12,11 @@ export default function Dashboard() {
     return (
       <div className="flex flex-1 flex-col gap-4 pt-0">
         <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-          <div className="aspect-video rounded-xl bg-muted" />
-          <div className="aspect-video rounded-xl bg-muted" />
-          <div className="aspect-video rounded-xl bg-muted" />
+          <Skeleton className="aspect-video rounded-xl bg-muted" />
+          <Skeleton className="aspect-video rounded-xl bg-muted" />
+          <Skeleton className="aspect-video rounded-xl bg-muted" />
         </div>
-        <div className="min-h-[100vh] flex-1 rounded-xl bg-muted md:min-h-min" />
+        <Skeleton className="w-full h-96 bg-muted" />
       </div>
     );
   }
