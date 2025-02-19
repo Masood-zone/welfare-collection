@@ -23,9 +23,6 @@ importers:
       '@types/jsonwebtoken':
         specifier: ^9.0.7
         version: 9.0.7
-      '@types/node':
-        specifier: ^22.10.7
-        version: 22.10.7
       axios:
         specifier: ^1.7.9
         version: 1.7.9
@@ -60,6 +57,9 @@ importers:
         specifier: ^5.7.3
         version: 5.7.3
     devDependencies:
+      '@types/node':
+        specifier: ^22.10.7
+        version: 22.10.7
       nodemon:
         specifier: ^3.1.9
         version: 3.1.9
