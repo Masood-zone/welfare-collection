@@ -11,7 +11,7 @@ import {
 } from "../helpers/user.helper";
 import { AppError } from "../utils/app-error";
 
-const JWT_SECRET = process.env.JWT_SECRET || "9fb$3Kf&b9x!q3";
+const JWT_SECRET = process.env.JWT_SECRET || "9fb$3Kf&b9x!q3Nv2sTz5@vQ6mC*wX1h";
 
 // Admin controller functions
 export const adminRegisterUser = async (

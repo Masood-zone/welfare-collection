@@ -36,7 +36,8 @@ export const authenticateUser = (
     req.user = payload; // Attach user data to the request object
     next();
   } catch (error) {
-    res.status(401).json({ error: "Invalid or expired token" });
+    console.log(error);
+    res.status(401).json({ error: `Invalid or expired token, ${error}` });
   }
 };
 
